@@ -50,7 +50,8 @@ loadData()
           v-for="item in list.items"
           :key="item.id"
         >
-          {{ item.name }}
+          <s v-if="item.isDone">{{ item.name }}</s>
+          <span v-else>{{ item.name }}</span>
         </li>
       </ul>
     </div>
