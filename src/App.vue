@@ -1,17 +1,60 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { ref } from 'vue'
+import supabase from './client'
+import { getLists, getListItems } from './client'
+
+const lists = ref([])
+
+const loadData = async (params) => {
+  const [
+    { data: rawLists },
+    { data: rawListItems },
+  ] = await Promise.all([
+    getLists(),
+    getListItems(),
+  ])
+
+  const groupedLists = rawLists.map((list) => {
+    return {
+      id: list.id,
+      title: list.title,
+      items: rawListItems
+        .filter((item) => item.list_id === list.id)
+        .map((item) => ({
+          id: item.id,
+          name: item.game_status.games.name,
+          thumbnail: item.game_status.games.thumbnail,
+          isDone: item.game_status.is_done
+        }))
+    }
+  })
+
+  console.log(groupedLists)
+
+  lists.value = groupedLists
+}
+
+loadData()
+
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <div
+      v-for="list in lists"
+      :key="list.id"
+    >
+      <h3>{{ list.title }}</h3>
+      <ul>
+        <li
+          v-for="item in list.items"
+          :key="item.id"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
