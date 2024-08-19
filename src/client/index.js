@@ -29,13 +29,29 @@ const getLists = () => {
     .order('title', { ascending: true })
 }
 
+const getGameStatuses = () => {
+  return supabase
+    .from('game_status')
+    .select(`
+      is_finished,
+      games (
+        id,
+        title,
+        thumbnail,
+        year
+      )
+    `)
+}
+
 export const getBacklog = async () => {
   const [
     { data: rawLists },
-    { data: rawListItems }
+    { data: rawListItems },
+    { data: rawGameStatuses },
   ] = await Promise.all([
     getLists(),
     getListItems(),
+    getGameStatuses()
   ])
 
   const backlog = rawLists
@@ -53,7 +69,35 @@ export const getBacklog = async () => {
         .sort((a, b) => a.isFinished - b.isFinished)
     }))
 
-  return backlog
+  const pseudoListMap = rawGameStatuses.reduce((res, curr) => {
+    if (curr.is_finished && curr.games.year) {
+      const decade = `${Math.floor(curr.games.year / 10) * 10}s`
+      const list = res[decade] || []
+
+      return {
+        ...res,
+        [decade]: [...list, {
+          gameId: curr.games.id,
+          gameTitle: curr.games.title,
+          gameThumbnail: curr.games.thumbnail,
+          isFinished: curr.is_finished,
+        }]
+      }
+    }
+
+    return res
+  }, {})
+
+  const pseudoLists = Object.entries(pseudoListMap)
+    .map(([decade, items]) => ({
+      id: decade,
+      title: decade,
+      items,
+    }))
+    .sort((a, b) => a.title > b.title ? 1 : -1)
+
+
+  return backlog.concat(pseudoLists)
 }
 
 export const isLoggedIn = async () => {
