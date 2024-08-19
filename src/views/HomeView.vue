@@ -1,55 +1,43 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
-import { getLists, getListItems } from '../client'
+import { useRouter } from 'vue-router';
+import { getBacklog, signOut } from '../client'
+
+const router = useRouter()
 
 const lists = ref([])
 
-const loadData = async (params) => {
-  const [
-    { data: rawLists },
-    { data: rawListItems },
-  ] = await Promise.all([
-    getLists(),
-    getListItems(),
-  ])
+const loadData = async () => {
+  const backlog = await getBacklog()
 
-  const groupedLists = rawLists.map((list) => {
-    return {
-      id: list.id,
-      title: list.title,
-      items: rawListItems
-        ?.filter((item) => item.list_id === list.id)
-        .map((item) => ({
-          name: item.games.name,
-          thumbnail: item.games.thumbnail,
-          isDone: item.games.game_status?.is_done
-        }))
-    }
-  })
-
-  console.log(groupedLists)
-
-  lists.value = groupedLists
+  lists.value = backlog
 }
 
 loadData()
+
+const signOutAndRedirect = async () => {
+  await signOut()
+  router.push('/login')
+}
 
 </script>
 
 <template>
   <div>
+    <button @click="signOutAndRedirect">sign out</button>
     <div
       v-for="list in lists"
       :key="list.id"
     >
       <h3>{{ list.title }}</h3>
+
       <ul>
         <li
           v-for="item in list.items"
-          :key="item.id"
+          :key="item.gameId"
         >
-          <s v-if="item.isDone">{{ item.name }}</s>
-          <span v-else>{{ item.name }}</span>
+          <s v-if="item.isFinished">{{ item.gameTitle }}</s>
+          <span v-else>{{ item.gameTitle }}</span>
         </li>
       </ul>
     </div>
