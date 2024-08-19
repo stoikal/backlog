@@ -10,22 +10,22 @@ export const getListItems = () => {
   return supabase
     .from('list_items')
     .select(`
-      id,
       list_id,
       created_at,
-      game_status (
-        games (
-          name,
-          thumbnail
-        ),
-        is_done
+      games (
+        name,
+        thumbnail,
+        game_status (
+          is_done
+        )
       )
     `)
-    .order('game_status(is_done)', { ascending: true })
+    .order('games(name)', { ascending: true })
 }
 
 export const getLists = () => {
   return supabase
     .from('lists')
     .select('*')
+    .order('title', { ascending: true })
 }
