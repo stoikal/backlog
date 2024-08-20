@@ -1,16 +1,21 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
-import { getBacklog, signOut } from '../client'
+import { getBacklog, getDecade, signOut } from '../client'
 
 const router = useRouter()
 
-const lists = ref([])
+const backlog = ref([])
+const decades = ref([])
 
 const loadData = async () => {
-  const backlog = await getBacklog()
-
-  lists.value = backlog
+  [
+    backlog.value,
+    decades.value,
+  ] = await Promise.all([
+    getBacklog(),
+    getDecade(),
+  ])
 }
 
 loadData()
@@ -20,13 +25,30 @@ const signOutAndRedirect = async () => {
   router.push('/login')
 }
 
+const countFinished = (items) => {
+  return items.filter((item) => item.isFinished).length
+}
+
+const sortedBacklog = computed(() => {  
+  return backlog.value
+    .sort((a, b) => countFinished(a.items) - countFinished(b.items))
+})
+
+
+const displayedBacklog = computed(() => {
+  return sortedBacklog.value.concat(decades.value)
+})
 </script>
 
 <template>
-  <div>
-    <button @click="signOutAndRedirect">sign out</button>
+  <a-row justify="end">
+    <a-col>
+      <a-button @click="signOutAndRedirect">sign out</a-button>
+    </a-col>
+  </a-row>
+  <a-card>
     <div
-      v-for="list in lists"
+      v-for="list in displayedBacklog"
       :key="list.id"
     >
       <h3>{{ list.title }}</h3>
@@ -41,7 +63,7 @@ const signOutAndRedirect = async () => {
         </li>
       </ul>
     </div>
-  </div>
+  </a-card>
 </template>
 
 <style scoped>

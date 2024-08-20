@@ -4,7 +4,9 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-const getListItems = () => {
+export default supabase
+
+const _getListItems = () => {
   return supabase
     .from('list_items')
     .select(`
@@ -12,47 +14,33 @@ const getListItems = () => {
       created_at,
       games (
         id,
-        title,
-        thumbnail,
+        name,
         game_status (
+          user_id,
           is_finished
         )
       )
     `)
-    .order('games(title)', { ascending: true })
+
+    .order('games(name)', { ascending: true })
 }
 
-const getLists = () => {
+const _getLists = () => {
   return supabase
     .from('lists')
     .select('*')
     .order('title', { ascending: true })
 }
 
-const getGameStatuses = () => {
-  return supabase
-    .from('game_status')
-    .select(`
-      is_finished,
-      games (
-        id,
-        title,
-        thumbnail,
-        year
-      )
-    `)
-}
-
 export const getBacklog = async () => {
   const [
     { data: rawLists },
     { data: rawListItems },
-    { data: rawGameStatuses },
   ] = await Promise.all([
-    getLists(),
-    getListItems(),
-    getGameStatuses()
+    _getLists(),
+    _getListItems(),
   ])
+  
 
   const backlog = rawLists
     .map((list) => ({
@@ -62,25 +50,43 @@ export const getBacklog = async () => {
         .filter((item) => item.list_id === list.id)
         .map((item) => ({
           gameId: item.games.id,
-          gameTitle: item.games.title,
-          gameThumbnail: item.games.thumbnail,
-          isFinished: item.games.game_status?.is_finished ?? false
+          gameTitle: item.games.name,
+          isFinished: item.games.game_status[0]?.is_finished ?? false
         }))
         .sort((a, b) => a.isFinished - b.isFinished)
     }))
 
-  const pseudoListMap = rawGameStatuses.reduce((res, curr) => {
-    if (curr.is_finished && curr.games.year) {
-      const decade = `${Math.floor(curr.games.year / 10) * 10}s`
-      const list = res[decade] || []
+  return backlog
+}
+
+const _getGameStatuses = () => {
+  return supabase
+    .from('game_status')
+    .select(`
+      is_finished,
+      games (
+        id,
+        name,
+        released
+      )
+    `)
+}
+
+export const getDecade = async () => {
+  const { data: rawGameStatues } = await _getGameStatuses()
+
+  const decadeMap = rawGameStatues.reduce((res, item) => {
+    if (item.is_finished && item.games.released) {
+      const year = new Date(item.games.released).getFullYear()
+      const decade = `${Math.floor(year / 10) * 10}s`
+      const decadeGames = res[decade] || []
 
       return {
         ...res,
-        [decade]: [...list, {
-          gameId: curr.games.id,
-          gameTitle: curr.games.title,
-          gameThumbnail: curr.games.thumbnail,
-          isFinished: curr.is_finished,
+        [decade]: [...decadeGames, {
+          gameId: item.games.id,
+          gameTitle: item.games.name,
+          isFinished: item.is_finished,
         }]
       }
     }
@@ -88,16 +94,15 @@ export const getBacklog = async () => {
     return res
   }, {})
 
-  const pseudoLists = Object.entries(pseudoListMap)
+  const result = Object.entries(decadeMap)
     .map(([decade, items]) => ({
-      id: decade,
       title: decade,
-      items,
+      id: decade,
+      items
     }))
     .sort((a, b) => a.title > b.title ? 1 : -1)
 
-
-  return backlog.concat(pseudoLists)
+  return result
 }
 
 export const isLoggedIn = async () => {
@@ -117,4 +122,9 @@ export const signInWithEmail = ({ email, password }) => {
 
 export const signOut = () => {
   return supabase.auth.signOut();
+}
+
+function isValidDate(dateString) {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
 }

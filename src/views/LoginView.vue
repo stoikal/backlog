@@ -1,7 +1,6 @@
 <script setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { Card, Form, FormItem, Button, Input, message } from 'ant-design-vue'
 import { signInWithEmail } from '../client'
 
 const router = useRouter()
@@ -21,35 +20,43 @@ const onFinish = async ({ email, password }) => {
 </script>
 
 <template>
-  <div>
-    <Card>
-      <Form
-        :model="formState"
-        :label-col="{ span: 8 }"
-        :wrapper-col="{ span: 16 }"
-        @finish="onFinish"
-      >
-        <FormItem
-          label="Email"
-          name="email"
-        >
-          <Input v-model:value="formState.email" />
-        </FormItem>
-
-        <FormItem
-          label="Password"
-          name="password"
-        >
-          <Input
-            v-model:value="formState.password"
-            type="password"
-          />
-        </FormItem>
-
-        <FormItem :wrapper-col="{ offset: 8, span: 16 }">
-            <Button type="primary" html-type="submit">Submit</Button>
-        </FormItem>
-      </Form>
-    </Card>
+  <div class="m">
+    <a-row justify="center">
+      <a-col>
+        <a-card style="width: 500px">
+          <a-form
+            :model="formState"
+            :label-col="{ span: 24 }"
+            :wrapper-col="{ span: 24 }"
+            @finish="onFinish"
+          >
+            <a-form-item
+              label="Email"
+              name="email"
+            >
+              <a-input v-model:value="formState.email" />
+            </a-form-item>
+    
+            <a-form-item
+              label="Password"
+              name="password"
+            >
+              <a-input
+                v-model:value="formState.password"
+                type="password"
+              />
+            </a-form-item>
+            
+            <a-row justify="end">
+              <a-col>
+                <a-form-item>
+                    <a-button type="primary" html-type="submit">Submit</a-button>
+                </a-form-item>
+              </a-col>
+            </a-row>
+          </a-form>
+        </a-card>
+      </a-col>
+    </a-row>
   </div>
 </template>
