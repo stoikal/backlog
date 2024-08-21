@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { getBacklog, getDecade } from '../client'
 import { signOut } from '../client/auth';
 import { createList } from "../client/lists"
+import ListCard from '../components/ListCard.vue';
 
 const router = useRouter()
 
@@ -56,6 +57,10 @@ const handleCancel = async () => {
 const openModal = () => {
   isModalOpen.value = true
 }
+
+const handleCreateSuccess = () => {
+  loadData()
+}
 </script>
 
 <template>
@@ -70,31 +75,12 @@ const openModal = () => {
       v-for="list in displayedBacklog"
       :key="list.id"
     >
-      <a-card
-        :title="list.title "
-        style="width: 400px; margin-bottom: 2rem; padding: 0"
-        hoverable
-      >
-        <a-list
-          :data-source="list.items"
-        >
-          <template #renderItem="{ item }">
-            <a-list-item>
-              <s v-if="item.isFinished">{{ item.gameTitle }}</s>
-              <span v-else>{{ item.gameTitle }}</span>
-            </a-list-item>
-          </template>
-          <template #footer>
-            <a-list-item>
-              <a-button>
-                +
-              </a-button>
-
-            </a-list-item>
-          </template>
-        </a-list>
-
-      </a-card>
+      <list-card
+        :list-id="list.id"
+        :title="list.title"
+        :items="list.items"
+        @create-success="handleCreateSuccess"
+      />
     </template>
   </a-card>
   <a-modal v-model:open="isModalOpen" title="Create List" @ok="handleOk">

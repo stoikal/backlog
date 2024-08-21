@@ -12,7 +12,7 @@ const _getListItems = async() => {
       games (
         id,
         name,
-        game_status (
+        game_statuses (
           user_id,
           is_finished
         )
@@ -48,7 +48,7 @@ export const getBacklog = async () => {
         .map((item) => ({
           gameId: item.games.id,
           gameTitle: item.games.name,
-          isFinished: item.games.game_status[0]?.is_finished ?? false
+          isFinished: item.games.game_statuses[0]?.is_finished ?? false
         }))
         .sort((a, b) => a.isFinished - b.isFinished)
     }))
@@ -58,7 +58,7 @@ export const getBacklog = async () => {
 
 const _getGameStatuses = () => {
   return supabase
-    .from('game_status')
+    .from('game_statuses')
     .select(`
       is_finished,
       games (
