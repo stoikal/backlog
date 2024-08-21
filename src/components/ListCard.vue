@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue';
+import { DeleteOutlined } from '@ant-design/icons-vue';
 import GameSelect from './GameSelect.vue';
-import { addItemToList, updateGameStatus } from '../client/lists';
+import { addItemToList, updateGameStatus, deleteList } from '../client/lists';
 
 const props = defineProps({
   listId: String,
@@ -9,7 +10,7 @@ const props = defineProps({
   items: Array,
 })
 
-const emit = defineEmits(['createSuccess', 'updateSuccess'])
+const emit = defineEmits(['createSuccess', 'updateSuccess', 'deleteSuccess'])
 
 const isInputVisible = ref(false)
 
@@ -40,7 +41,11 @@ const handleStatusCheckboxChange = async (item, event) => {
   emit('updateSuccess')
 }
 
+const handleDeleteList = async () => {
+  await deleteList(props.listId)
 
+  emit('deleteSuccess')
+}
 </script>
 
 <template>
@@ -50,6 +55,21 @@ const handleStatusCheckboxChange = async (item, event) => {
     :bodyStyle="{ padding: 0 }"
     hoverable
   >
+    <template #extra>
+      <a-popconfirm
+        title="Delete?"
+        ok-text="Yes"
+        cancel-text="No"
+        @confirm="handleDeleteList"
+      >
+        <a-button type="text" shape="circle" :size="size">
+          <template #icon>
+            <delete-outlined style="color: salmon" />
+          </template>
+        </a-button>
+      </a-popconfirm>
+    </template>
+  
     <a-list
       :data-source="props.items"
     >

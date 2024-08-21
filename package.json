@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@supabase/supabase-js": "^2.45.1",
     "ant-design-vue": "^4.2.3",
     "lodash-es": "^4.17.21",

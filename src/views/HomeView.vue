@@ -57,14 +57,6 @@ const handleCancel = async () => {
 const openModal = () => {
   isModalOpen.value = true
 }
-
-const handleCreateSuccess = () => {
-  loadData()
-}
-
-const handleUpdateSuccess = () => {
-  loadData()
-}
 </script>
 
 <template>
@@ -85,8 +77,9 @@ const handleUpdateSuccess = () => {
         :list-id="list.id"
         :title="list.title"
         :items="list.items"
-        @create-success="handleCreateSuccess"
-        @update-success="handleUpdateSuccess"
+              @create-success="loadData"
+              @update-success="loadData"
+              @delete-success="loadData"
       />
     </template>
   </a-card>

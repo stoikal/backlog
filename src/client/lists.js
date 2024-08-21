@@ -80,3 +80,10 @@ export const updateGameStatus = async ({ gameId, isFinished }) => {
   
   return _createOrUpdateGameStatus({ userId: user.id, gameId, isFinished })
 }
+
+export const deleteList = (listId) => {
+  return supabase
+    .from('lists')
+    .delete()
+    .eq('id', listId)
+}
