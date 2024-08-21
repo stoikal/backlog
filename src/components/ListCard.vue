@@ -103,3 +103,10 @@ const handleStatusCheckboxChange = async (item, event) => {
     </a-list>
   </a-card>
 </template>
+
+<style>
+ .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: lightgray;
+  border-color: lightgray
+}
+</style>
