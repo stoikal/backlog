@@ -61,6 +61,7 @@ const handleDeleteList = async () => {
         title="Delete?"
         ok-text="Yes"
         cancel-text="No"
+        size="large"
         @confirm="handleDeleteList"
       >
         <a-button type="text" shape="circle" :size="size">

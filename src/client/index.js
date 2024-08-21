@@ -1,9 +1,6 @@
 import supabase from "./_supabase"
 
 const _getListItems = async() => {  
-
-
-  
   return supabase
     .from('list_items')
     .select(`

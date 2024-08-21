@@ -6,7 +6,7 @@ import { getBacklog, getDecade } from '../client'
 import { signOut } from '../client/auth';
 import { createList } from "../client/lists"
 import ListCard from '../components/ListCard.vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
+import AddGameButton from '../components/AddGameButton.vue'
 
 const router = useRouter()
 
@@ -115,10 +115,6 @@ const handleOk = async () => {
   loadData()
 }
 
-const handleCancel = async () => {
-
-}
-
 const openModal = () => {
   isModalOpen.value = true
 }
@@ -173,18 +169,10 @@ const openModal = () => {
     </a-row>
   </div>
 
-  <a-float-button @click="openModal">
-    <template #icon>
-      <PlusOutlined />
-    </template>
-  </a-float-button>
-
-  <a-modal v-model:open="isModalOpen" title="Create List" @ok="handleOk">
-    <template #footer>
-      <a-button key="submit" type="primary" @click="handleOk">Submit</a-button>
-    </template>
-    <a-input v-model:value="listTitle" />
-  </a-modal>
+  <add-game-button
+    @success="loadData"
+    @list-success="loadData"
+  />
 </template>
 
 <style scoped>
