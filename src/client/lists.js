@@ -8,6 +8,9 @@ const getLists = () => {
 }
 
 export const createList = async ({ title }) => {
+  const session = await supabase.auth.getSession();
+  const { user } = session.data.session
+
   return supabase
     .from('lists')
     .insert([
@@ -69,4 +72,11 @@ export const addItemToList = async (listId, { gameId, isFinished }) => {
     _createOrUpdateGameStatus({ userId: user.id, gameId, isFinished }),
     _createListItem({ listId, gameId }),
   ])         
+}
+
+export const updateGameStatus = async ({ gameId, isFinished }) => {
+  const session = await supabase.auth.getSession();
+  const { user } = session.data.session
+  
+  return _createOrUpdateGameStatus({ userId: user.id, gameId, isFinished })
 }

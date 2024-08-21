@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import GameSelect from './GameSelect.vue';
-import { addItemToList } from '../client/lists';
+import { addItemToList, updateGameStatus } from '../client/lists';
 
 const props = defineProps({
   listId: String,
@@ -9,7 +9,7 @@ const props = defineProps({
   items: Array,
 })
 
-const emit = defineEmits(['createSuccess'])
+const emit = defineEmits(['createSuccess', 'updateSuccess'])
 
 const isInputVisible = ref(false)
 
@@ -30,52 +30,73 @@ const handleSubmit = async () => {
   isInputVisible.value = false
   emit('createSuccess')
 }
+
+const handleStatusCheckboxChange = async (item, event) => {
+  await updateGameStatus({
+    gameId: item.gameId,
+    isFinished: event.target.checked,
+  })
+
+  emit('updateSuccess')
+}
+
+
 </script>
 
 <template>
   <a-card
     :title="props.title"
     style="width: 400px; margin-bottom: 2rem; padding: 0"
+    :bodyStyle="{ padding: 0 }"
     hoverable
   >
     <a-list
       :data-source="props.items"
     >
       <template #renderItem="{ item }">
-        <a-list-item>
-          <s v-if="item.isFinished">{{ item.gameTitle }}</s>
-          <span v-else>{{ item.gameTitle }}</span>
+        <a-list-item
+          disabled
+        >
+          <a-space>
+            <a-checkbox
+              :checked="item.isFinished"
+              @change="handleStatusCheckboxChange(item, $event)"
+            />
+            <s v-if="item.isFinished">{{ item.gameTitle }}</s>
+            <span v-else>{{ item.gameTitle }}</span>
+          </a-space>
         </a-list-item>
       </template>
       <template #footer>
         <!-- <a-list-item> -->
-          <template v-if="isInputVisible">
-            <a-space>
-
-              <game-select
-                v-model:value="selectedGame"
-              />
-              <a-checkbox
-                v-model:checked="isGameFinished"
-              >
-                finished
-              </a-checkbox>
-            </a-space>
-            <a-space>
-              <a-button @click="isInputVisible = false">cancel</a-button>
-              <a-button type="primary" @click="handleSubmit">submit</a-button>
-            </a-space>
-          </template>
-
-          <template v-else>
-            <a-button
-              type="text"
-              block
-              @click="showInput"
-            >
-              +
-            </a-button>
-          </template>
+          <div style="padding: 0 1rem">
+            <template v-if="isInputVisible">
+              <a-space style="margin-bottom: .5rem;">
+                <game-select
+                  v-model:value="selectedGame"
+                />
+                <a-checkbox
+                  v-model:checked="isGameFinished"
+                >
+                  finished
+                </a-checkbox>
+              </a-space>
+              <a-space>
+                <a-button @click="isInputVisible = false">cancel</a-button>
+                <a-button type="primary" @click="handleSubmit">submit</a-button>
+              </a-space>
+            </template>
+            
+            <template v-else>
+              <a-button
+                type="text"
+                block
+                @click="showInput"
+                >
+                +
+              </a-button>
+            </template>
+          </div>
 
         <!-- </a-list-item> -->
       </template>

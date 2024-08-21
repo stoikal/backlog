@@ -61,16 +61,22 @@ const openModal = () => {
 const handleCreateSuccess = () => {
   loadData()
 }
+
+const handleUpdateSuccess = () => {
+  loadData()
+}
 </script>
 
 <template>
-  <a-row justify="end">
+  <a-row justify="end" >
     <a-col>
       <a-button @click="signOutAndRedirect">sign out</a-button>
     </a-col>
   </a-row>
   <a-card>
-    <a-button @click="openModal">create</a-button>
+    <div style="margin-bottom: 24px;">
+      <a-button @click="openModal">create</a-button>
+    </div>
     <template
       v-for="list in displayedBacklog"
       :key="list.id"
@@ -80,12 +86,13 @@ const handleCreateSuccess = () => {
         :title="list.title"
         :items="list.items"
         @create-success="handleCreateSuccess"
+        @update-success="handleUpdateSuccess"
       />
     </template>
   </a-card>
   <a-modal v-model:open="isModalOpen" title="Create List" @ok="handleOk">
     <template #footer>
-      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+      <a-button key="submit" type="primary" @click="handleOk">Submit</a-button>
     </template>
     <a-input v-model:value="listTitle" />
   </a-modal>
