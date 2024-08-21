@@ -28,18 +28,18 @@ const signOutAndRedirect = async () => {
   router.push('/login')
 }
 
-const countFinished = (items) => {
-  return items.filter((item) => item.isFinished).length
-}
+// const countFinished = (items) => {
+//   return items.filter((item) => item.isFinished).length
+// }
 
-const sortedBacklog = computed(() => {  
-  return backlog.value
-    .sort((a, b) => countFinished(a.items) - countFinished(b.items))
-})
+// const sortedBacklog = computed(() => {  
+//   return backlog.value
+//     .sort((a, b) => countFinished(a.items) - countFinished(b.items))
+// })
 
 
 const displayedBacklog = computed(() => {
-  return sortedBacklog.value.concat(decades.value)
+  return backlog.value.concat(decades.value)
 })
 
 const isModalOpen = ref(false)

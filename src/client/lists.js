@@ -34,13 +34,39 @@ const _createGameStatus = ({ userId, gameId, isFinished }) => {
     .select()      
 }
 
+const _updateGameStatus = ({ userId, gameId, isFinished }) => {
+  return supabase
+    .from('game_statuses')
+    .update({ user_id: userId, game_id: gameId, is_finished: isFinished })
+    .eq('user_id', userId)
+    .eq('game_id', gameId)
+    .select()
+}
+
+const _getGameStatus = ({ userId, gameId }) => {
+  return supabase
+    .from('game_statuses')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('game_id', gameId) 
+}
+
+const _createOrUpdateGameStatus = async ({ userId, gameId, isFinished }) => {
+  const { data, error } = await _getGameStatus({ userId, gameId })
+
+  if (data.length) {
+    return _updateGameStatus({ userId, gameId, isFinished })
+  } else {
+    return _createGameStatus({ userId, gameId, isFinished })
+  }
+}
 
 export const addItemToList = async (listId, { gameId, isFinished }) => {
   const session = await supabase.auth.getSession();
   const { user } = session.data.session
 
   await Promise.all([
-    _createGameStatus({ userId: user.id, gameId, isFinished }),
-    _createListItem({ listId, gameId })
+    _createOrUpdateGameStatus({ userId: user.id, gameId, isFinished }),
+    _createListItem({ listId, gameId }),
   ])         
 }
