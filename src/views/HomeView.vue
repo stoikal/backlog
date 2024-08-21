@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { getBacklog, getDecade } from '../client'
 import { signOut } from '../client/auth';
 import { createList } from "../client/lists"
 import ListCard from '../components/ListCard.vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
 
 const router = useRouter()
 
@@ -37,10 +39,38 @@ const signOutAndRedirect = async () => {
 //     .sort((a, b) => countFinished(a.items) - countFinished(b.items))
 // })
 
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const columnCount = computed(() => {
+  let count = 1
+
+  if (breakpoints.greaterOrEqual('lg').value) {
+    count = 3
+  } else if (breakpoints.greaterOrEqual('sm').value) {
+    count = 2
+  }
+
+  return count
+})
 
 const displayedBacklog = computed(() => {
-  return backlog.value.concat(decades.value)
+  let divider = columnCount.value;
+
+  const all = backlog.value.concat(decades.value)
+  let columns = []
+
+  all.forEach((item, itemIndex) => {
+    const columnIndex = itemIndex % divider
+
+    if (columns[columnIndex]) {
+      columns[columnIndex].push(item)
+    } else {
+      columns[columnIndex] = [item]
+    }
+  })
+
+  return columns
 })
+
 
 const isModalOpen = ref(false)
 const listTitle = ref('')
@@ -60,29 +90,38 @@ const openModal = () => {
 </script>
 
 <template>
-  <a-row justify="end" >
-    <a-col>
-      <a-button @click="signOutAndRedirect">sign out</a-button>
-    </a-col>
-  </a-row>
-  <a-card>
-    <div style="margin-bottom: 24px;">
-      <a-button @click="openModal">create</a-button>
-    </div>
-    <template
-      v-for="list in displayedBacklog"
-      :key="list.id"
-    >
-      <list-card
-        :list-id="list.id"
-        :title="list.title"
-        :items="list.items"
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <a-row :gutter="24">
+      <template
+        v-for="backlog, index in displayedBacklog"
+        :key="index"
+      >
+        <a-col :span="24 / columnCount">
+          <template
+            v-for="list in backlog"
+            :key="list.id"
+          >
+            <list-card
+              :list-id="list.id"
+              :title="list.title"
+              :items="list.items"
               @create-success="loadData"
               @update-success="loadData"
               @delete-success="loadData"
-      />
+            />
+          </template>
+        </a-col>
+      </template>
+    </a-row>
+  </div>
+
+  <a-float-button @click="openModal">
+    <template #icon>
+      <PlusOutlined />
     </template>
-  </a-card>
+  </a-float-button>
+
   <a-modal v-model:open="isModalOpen" title="Create List" @ok="handleOk">
     <template #footer>
       <a-button key="submit" type="primary" @click="handleOk">Submit</a-button>

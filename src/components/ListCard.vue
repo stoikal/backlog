@@ -51,7 +51,7 @@ const handleDeleteList = async () => {
 <template>
   <a-card
     :title="props.title"
-    style="width: 400px; margin-bottom: 2rem; padding: 0"
+    style="margin-bottom: 2rem; padding: 0"
     :bodyStyle="{ padding: 0 }"
     hoverable
   >
@@ -101,10 +101,14 @@ const handleDeleteList = async () => {
                   finished
                 </a-checkbox>
               </a-space>
-              <a-space>
-                <a-button @click="isInputVisible = false">cancel</a-button>
-                <a-button type="primary" @click="handleSubmit">submit</a-button>
-              </a-space>
+              <a-row :gutter="8" justify="end">
+                <a-col>
+                  <a-button @click="isInputVisible = false">cancel</a-button>
+                </a-col>
+                <a-col>
+                  <a-button type="primary" @click="handleSubmit">submit</a-button>
+                </a-col>
+              </a-row>
             </template>
             
             <template v-else>
