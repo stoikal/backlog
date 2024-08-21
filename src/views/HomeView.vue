@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
-import { getBacklog, getDecade, signOut } from '../client'
+import { getBacklog, getDecade } from '../client'
+import { signOut } from '../client/auth';
+import { createList } from "../client/lists"
 
 const router = useRouter()
 
@@ -38,6 +40,22 @@ const sortedBacklog = computed(() => {
 const displayedBacklog = computed(() => {
   return sortedBacklog.value.concat(decades.value)
 })
+
+const isModalOpen = ref(false)
+const listTitle = ref('')
+const handleOk = async () => {
+  await createList({ title: listTitle.value })
+  isModalOpen.value = false
+  loadData()
+}
+
+const handleCancel = async () => {
+
+}
+
+const openModal = () => {
+  isModalOpen.value = true
+}
 </script>
 
 <template>
@@ -47,23 +65,44 @@ const displayedBacklog = computed(() => {
     </a-col>
   </a-row>
   <a-card>
-    <div
+    <a-button @click="openModal">create</a-button>
+    <template
       v-for="list in displayedBacklog"
       :key="list.id"
     >
-      <h3>{{ list.title }}</h3>
-
-      <ul>
-        <li
-          v-for="item in list.items"
-          :key="item.gameId"
+      <a-card
+        :title="list.title "
+        style="width: 400px; margin-bottom: 2rem; padding: 0"
+        hoverable
+      >
+        <a-list
+          :data-source="list.items"
         >
-          <s v-if="item.isFinished">{{ item.gameTitle }}</s>
-          <span v-else>{{ item.gameTitle }}</span>
-        </li>
-      </ul>
-    </div>
+          <template #renderItem="{ item }">
+            <a-list-item>
+              <s v-if="item.isFinished">{{ item.gameTitle }}</s>
+              <span v-else>{{ item.gameTitle }}</span>
+            </a-list-item>
+          </template>
+          <template #footer>
+            <a-list-item>
+              <a-button>
+                +
+              </a-button>
+
+            </a-list-item>
+          </template>
+        </a-list>
+
+      </a-card>
+    </template>
   </a-card>
+  <a-modal v-model:open="isModalOpen" title="Create List" @ok="handleOk">
+    <template #footer>
+      <a-button key="submit" type="primary" :loading="loading" @click="handleOk">Submit</a-button>
+    </template>
+    <a-input v-model:value="listTitle" />
+  </a-modal>
 </template>
 
 <style scoped>

@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { signInWithEmail } from '../client'
+import { signInWithEmail } from '../client/auth'
 
 const router = useRouter()
 

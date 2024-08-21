@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
-import { isLoggedIn } from '../client'
+import { isLoggedIn } from '../client/auth'
 
 const routes = [
   {

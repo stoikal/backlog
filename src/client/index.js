@@ -1,12 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import supabase from "./_supabase"
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+const _getListItems = async() => {  
 
-export default supabase
 
-const _getListItems = () => {
+  
   return supabase
     .from('list_items')
     .select(`
@@ -19,9 +16,9 @@ const _getListItems = () => {
           user_id,
           is_finished
         )
-      )
+      ),
+      lists (*)
     `)
-
     .order('games(name)', { ascending: true })
 }
 
@@ -103,28 +100,4 @@ export const getDecade = async () => {
     .sort((a, b) => a.title > b.title ? 1 : -1)
 
   return result
-}
-
-export const isLoggedIn = async () => {
-  const { data: user, error } = await supabase.auth.getUser()
-
-  if (error) return false
-
-  return user !== null
-}
-
-export const signInWithEmail = ({ email, password }) => {
-  return supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-}
-
-export const signOut = () => {
-  return supabase.auth.signOut();
-}
-
-function isValidDate(dateString) {
-  const date = new Date(dateString);
-  return !isNaN(date.getTime());
 }
