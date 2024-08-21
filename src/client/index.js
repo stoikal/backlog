@@ -43,6 +43,7 @@ export const getBacklog = async () => {
     .map((list) => ({
       id: list.id,
       title: list.title,
+      createdAt: list.created_at,
       items: rawListItems
         .filter((item) => item.list_id === list.id)
         .map((item) => ({
@@ -95,7 +96,8 @@ export const getDecade = async () => {
     .map(([decade, items]) => ({
       title: decade,
       id: decade,
-      items
+      items,
+      pseudo: true
     }))
     .sort((a, b) => a.title > b.title ? 1 : -1)
 

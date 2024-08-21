@@ -30,7 +30,7 @@ const fetchGames = debounce(value => {
       state.data = data;
       state.fetching = false;
     });
-}, 300);
+}, 800);
 
 
 const model = defineModel()

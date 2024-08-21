@@ -8,6 +8,7 @@ const props = defineProps({
   listId: String,
   title: String,
   items: Array,
+  hideAddButton: Boolean
 })
 
 const emit = defineEmits(['createSuccess', 'updateSuccess', 'deleteSuccess'])
@@ -89,7 +90,7 @@ const handleDeleteList = async () => {
       </template>
       <template #footer>
         <!-- <a-list-item> -->
-          <div style="padding: 0 1rem">
+          <div style="padding: 0 1rem" v-if="!props.hideAddButton">
             <template v-if="isInputVisible">
               <a-space style="margin-bottom: .5rem;">
                 <game-select
@@ -112,13 +113,15 @@ const handleDeleteList = async () => {
             </template>
             
             <template v-else>
-              <a-button
-                type="text"
-                block
-                @click="showInput"
-                >
-                +
-              </a-button>
+              <div style="text-align: center;">
+                <a-button
+                  type="text"
+                  shape="circle"
+                  @click="showInput"
+                  >
+                  +
+                </a-button>
+              </div style="text-align: center;">
             </template>
           </div>
 
