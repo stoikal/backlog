@@ -80,13 +80,13 @@ const saveList = async () => {
       />
       <div style="padding: .5rem .8rem;">
         <div>
-          {{ selectedGame?.option.game?.genres?.split('||').join(', ') }}
+          {{ selectedGame?.option.game.genres?.split('||').join(', ') }}
         </div>
         <div>
-          {{ selectedGame?.option.game?.platforms?.split('||').join(', ') }}
+          {{ selectedGame?.option.game.platforms?.split('||').join(', ') }}
         </div>
         <div>
-          {{ selectedGame?.option.game?.released }}
+          {{ selectedGame?.option.game.released }}
         </div>
       </div>
     </a-form-item>
