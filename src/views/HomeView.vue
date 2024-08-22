@@ -158,7 +158,7 @@ const openModal = () => {
               :list-id="list.id"
               :title="list.title"
               :items="list.items"
-              :hide-add-button="list.pseudo"
+              :read-only="list.pseudo"
               @create-success="loadData"
               @update-success="loadData"
               @delete-success="loadData"

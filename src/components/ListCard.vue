@@ -8,7 +8,7 @@ const props = defineProps({
   listId: String,
   title: String,
   items: Array,
-  hideAddButton: Boolean
+  readOnly: Boolean
 })
 
 const emit = defineEmits(['createSuccess', 'updateSuccess', 'deleteSuccess'])
@@ -56,7 +56,7 @@ const handleDeleteList = async () => {
     :bodyStyle="{ padding: 0 }"
     hoverable
   >
-    <template #extra>
+    <template #extra v-if="!props.readOnly">
       <a-popconfirm
         title="Delete?"
         ok-text="Yes"
@@ -91,7 +91,7 @@ const handleDeleteList = async () => {
       </template>
       <template #footer>
         <!-- <a-list-item> -->
-          <div style="padding: 0 1rem" v-if="!props.hideAddButton">
+          <div style="padding: 0 1rem" v-if="!props.readOnly">
             <template v-if="isInputVisible">
               <a-space style="margin-bottom: .5rem;">
                 <game-select
@@ -118,6 +118,7 @@ const handleDeleteList = async () => {
                 <a-button
                   type="text"
                   shape="circle"
+                  size="large"
                   @click="showInput"
                   >
                   +
