@@ -76,7 +76,19 @@ const saveList = async () => {
     <a-form-item>
       <game-select
         v-model:value="selectedGame"
+        style="max-width: 300px; width: 100%"
       />
+      <div style="padding: .5rem .8rem;">
+        <div>
+          {{ selectedGame?.option.game?.genres?.split('||').join(', ') }}
+        </div>
+        <div>
+          {{ selectedGame?.option.game?.platforms?.split('||').join(', ') }}
+        </div>
+        <div>
+          {{ selectedGame?.option.game?.released }}
+        </div>
+      </div>
     </a-form-item>
 
     <a-checkbox-group

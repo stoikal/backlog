@@ -24,6 +24,7 @@ const fetchGames = debounce(value => {
         return;
       }
       const data = res.data.map((game) => ({
+        game,
         label: game.name,
         value: game.id,
       }));
@@ -50,7 +51,6 @@ const handleSelect = (value) => {
     show-search
     label-in-value
     placeholder="Select game"
-    style="width: 280px"
     :filter-option="false"
     :not-found-content="state.fetching ? undefined : null"
     :options="state.data"
