@@ -5,6 +5,6 @@ export const getGames = async ({ name }) => {
     .from('games')
     .select('*')
     .ilike('name', `%${name}%`)
-    .range(0, 19)
+    .range(0, 99)
     .order('name', { ascending: true })
 }
