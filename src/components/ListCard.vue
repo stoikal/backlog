@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
-import { DeleteOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import GameSelect from './GameSelect.vue';
-import { addItemToList, updateGameStatus, deleteList } from '../client/lists';
+import { addItemToList, updateGameStatus, deleteList, updateList } from '../client/lists';
 
 const props = defineProps({
   listId: String,
@@ -47,6 +47,26 @@ const handleDeleteList = async () => {
 
   emit('deleteSuccess')
 }
+
+const titleEdit = ref('')
+const listItemsEdit = ref([])
+const isModalOpen = ref(false)
+
+const openModal = () => {
+  isModalOpen.value = true
+  titleEdit.value = props.title
+  listItemsEdit.value = props.items
+}
+
+const submitEdit = async () => {
+  await updateList(props.listId, {
+    title: titleEdit.value
+  })
+
+  isModalOpen.value = false
+  emit('updateSuccess')
+}
+
 </script>
 
 <template>
@@ -57,28 +77,38 @@ const handleDeleteList = async () => {
     hoverable
   >
     <template #extra v-if="!props.readOnly">
-      <a-popconfirm
-        title="Delete?"
-        ok-text="Yes"
-        cancel-text="No"
-        size="large"
-        @confirm="handleDeleteList"
-      >
-        <a-button type="text" shape="circle" :size="size">
+      <a-space>
+        <a-button
+          type="text"
+          shape="circle"
+          :size="size"
+          @click="openModal"
+        >
           <template #icon>
-            <delete-outlined style="color: salmon" />
+            <edit-outlined style="color: gray"/>
           </template>
         </a-button>
-      </a-popconfirm>
+        <a-popconfirm
+          title="Delete?"
+          ok-text="Yes"
+          cancel-text="No"
+          size="large"
+          @confirm="handleDeleteList"
+        >
+          <a-button type="text" shape="circle" :size="size">
+            <template #icon>
+              <delete-outlined style="color: salmon" />
+            </template>
+          </a-button>
+        </a-popconfirm>
+      </a-space>
     </template>
   
     <a-list
       :data-source="props.items"
     >
       <template #renderItem="{ item }">
-        <a-list-item
-          disabled
-        >
+        <a-list-item>
           <a-space>
             <a-checkbox
               :checked="item.isFinished"
@@ -121,7 +151,7 @@ const handleDeleteList = async () => {
                   size="large"
                   @click="showInput"
                   >
-                  +
+                  <plus-outlined style="color: gray"/>
                 </a-button>
               </div style="text-align: center;">
             </template>
@@ -131,6 +161,37 @@ const handleDeleteList = async () => {
       </template>
     </a-list>
   </a-card>
+
+  <a-modal
+    title="Edit"
+    :open="isModalOpen"
+    @cancel="isModalOpen = false"
+    @ok="submitEdit"
+  >
+    <a-form
+      :label-col="{ span: 24 }"
+      :wrapper-col="{ span: 24 }"
+      style="padding: 1rem 0"  
+    >
+      <a-form-item label="Title">
+        <a-input
+          v-model:value="titleEdit"
+        />
+      </a-form-item>
+
+      <a-list
+        :data-source="listItemsEdit"
+      >
+        <template #renderItem="{ item }">
+          <a-list-item>
+            <a-space>
+              <span>{{ item.gameTitle }}</span>
+            </a-space>
+          </a-list-item>
+        </template>
+      </a-list>
+    </a-form>
+  </a-modal>
 </template>
 
 <style>

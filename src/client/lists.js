@@ -40,6 +40,15 @@ export const createList = async ({ title }) => {
     .select()            
 }
 
+export const updateList = async (listId, { title }) => {
+
+  return supabase
+    .from('lists')
+    .update({ title })
+    .eq('id', listId)
+    .select()
+}
+
 const _createListItem = ({ listId, gameId }) => {
   return supabase
     .from('list_items')
