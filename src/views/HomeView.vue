@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useDebounceFn } from '@vueuse/core'
 import { getBacklog, getDecade } from '../client'
 import { signOut } from '../client/auth';
 import { createList } from "../client/lists"
@@ -87,10 +88,26 @@ const columnCount = computed(() => {
   return count
 })
 
+const gameTitleFilter = ref('')
+
+const debouncedChangeGameTitleFilter = useDebounceFn((e) => {
+  gameTitleFilter.value = e.target.value
+}, 800)
+
+const filteredBlacklog = computed(() => {
+  return sortedBacklog.value.concat(decades.value)
+    .map((list) => ({
+      ...list,
+      items: list.items
+        .filter((item) => item.gameTitle.toLowerCase().includes(gameTitleFilter.value.toLowerCase()))
+    }))
+    .filter((list) => list.items.length > 0)
+})
+
 const displayedBacklog = computed(() => {
   let divider = columnCount.value;
 
-  const all = sortedBacklog.value.concat(decades.value)
+  const all = filteredBlacklog.value
   let columns = []
 
   all.forEach((item, itemIndex) => {
@@ -123,9 +140,16 @@ const openModal = () => {
 <template>
   <div style="max-width: 1200px; margin: 0 auto;">
     <a-row
-      justify="end"
+      justify="space-between"
       style="margin-bottom: 2rem;"
     >
+      <a-col>
+        <a-input
+          :value="gameTitleFilter"
+          placeholder="Game title"
+          @change="debouncedChangeGameTitleFilter"
+        />
+      </a-col>
       <a-col>
         <a-space>
           <label>sort by:</label>

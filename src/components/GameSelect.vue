@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, watch } from 'vue';
-import { debounce } from 'lodash-es';
+import { useDebounceFn } from '@vueuse/core'
 import { getGames } from '../client/games'
 
 
@@ -11,7 +11,7 @@ const state = reactive({
   fetching: false,
 });
 
-const fetchGames = debounce(value => {
+const fetchGames = (value) => {
   lastFetchId += 1;
   const fetchId = lastFetchId;
   state.data = [];
@@ -31,8 +31,9 @@ const fetchGames = debounce(value => {
       state.data = data;
       state.fetching = false;
     });
-}, 800);
+};
 
+const debouncedFetchGames = useDebounceFn(fetchGames, 800)
 
 const model = defineModel()
 watch(() => model.value, () => {
@@ -54,7 +55,7 @@ const handleSelect = (value) => {
     :filter-option="false"
     :not-found-content="state.fetching ? undefined : null"
     :options="state.data"
-    @search="fetchGames"
+    @search="debouncedFetchGames"
     @select="handleSelect"
   >
     <template v-if="state.fetching" #notFoundContent>
