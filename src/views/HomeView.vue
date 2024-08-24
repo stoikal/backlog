@@ -101,7 +101,7 @@ const filteredBlacklog = computed(() => {
       items: list.items
         .filter((item) => item.gameTitle.toLowerCase().includes(gameTitleFilter.value.toLowerCase()))
     }))
-    .filter((list) => list.items.length > 0)
+    .filter((list) => gameTitleFilter.value.length === 0 || list.items.length >  0)
 })
 
 const displayedBacklog = computed(() => {
