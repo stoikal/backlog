@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import GameSelect from './GameSelect.vue';
-import { addItemToList, updateGameStatus, deleteList, updateList } from '../client/lists';
+import { addItemToList, updateGameStatus, deleteList, updateList, deleteListItemsOfList } from '../client/lists';
 
 const props = defineProps({
   listId: String,
@@ -58,10 +58,20 @@ const openModal = () => {
   listItemsEdit.value = props.items
 }
 
+const tempDeleteItem = (item) => {
+  listItemsEdit.value = listItemsEdit.value.filter(i => i !== item)
+}
+
 const submitEdit = async () => {
   await updateList(props.listId, {
     title: titleEdit.value
   })
+
+  const toDelete = props.items
+    .filter((item) => listItemsEdit.value.every((i) => i.gameId !== item.gameId))
+    .map((item) => item.gameId)
+
+  await deleteListItemsOfList(props.listId, toDelete)
 
   isModalOpen.value = false
   emit('updateSuccess')
@@ -95,7 +105,7 @@ const submitEdit = async () => {
           size="large"
           @confirm="handleDeleteList"
         >
-          <a-button type="text" shape="circle" :size="size">
+          <a-button type="text" shape="circle">
             <template #icon>
               <delete-outlined style="color: salmon" />
             </template>
@@ -183,10 +193,28 @@ const submitEdit = async () => {
         :data-source="listItemsEdit"
       >
         <template #renderItem="{ item }">
-          <a-list-item>
-            <a-space>
-              <span>{{ item.gameTitle }}</span>
-            </a-space>
+          <a-list-item style="padding: 12px 10px;">
+            {{ item.gameTitle }}
+            <template #actions>
+              <a-space>
+                <!-- <a-button type="text" shape="circle">
+                  <edit-outlined style="color: gray" />
+                </a-button> -->
+                <a-popconfirm
+                  title="Delete?"
+                  ok-text="Yes"
+                  cancel-text="No"
+                  size="large"
+                  @confirm="tempDeleteItem(item)"
+                >
+                  <a-button type="text" shape="circle">
+                    <template #icon>
+                      <delete-outlined style="color: salmon" />
+                    </template>
+                  </a-button>
+                </a-popconfirm>
+              </a-space>
+            </template>
           </a-list-item>
         </template>
       </a-list>

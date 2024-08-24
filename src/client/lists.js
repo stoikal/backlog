@@ -7,6 +7,14 @@ export const getLists = () => {
     .order('title', { ascending: true })
 }
 
+export const deleteListItemsOfList = (listId, gameIds) => {
+  return supabase
+    .from('list_items')
+    .delete()
+    .eq('list_id', listId)
+    .in('game_id', gameIds)
+}
+
 export const deleteListItems = (gameId, listIds) => {
   return supabase
     .from('list_items')
