@@ -130,44 +130,51 @@ const submitEdit = async () => {
         </a-list-item>
       </template>
       <template #footer>
-        <!-- <a-list-item> -->
-          <div style="padding: 0 1rem" v-if="!props.readOnly">
-            <template v-if="isInputVisible">
-              <a-space style="margin-bottom: .5rem;">
+        <div style="padding: 0 1rem" v-if="!props.readOnly">
+          <template v-if="isInputVisible">
+            <a-flex
+              gap="small"
+              align="center"
+              style="margin-bottom: .5rem;"
+            >
+              <div style="flex: 1">
                 <game-select
                   v-model:value="selectedGame"
+                  style="width: 100%"
                 />
+              </div>
+              <div>
                 <a-checkbox
                   v-model:checked="isGameFinished"
                 >
                   finished
                 </a-checkbox>
-              </a-space>
-              <a-row :gutter="8" justify="end">
-                <a-col>
-                  <a-button @click="isInputVisible = false">cancel</a-button>
-                </a-col>
-                <a-col>
-                  <a-button type="primary" @click="handleSubmit">submit</a-button>
-                </a-col>
-              </a-row>
-            </template>
-            
-            <template v-else>
-              <div style="text-align: center;">
-                <a-button
-                  type="text"
-                  shape="circle"
-                  size="large"
-                  @click="showInput"
-                  >
-                  <plus-outlined style="color: gray"/>
-                </a-button>
-              </div style="text-align: center;">
-            </template>
-          </div>
-
-        <!-- </a-list-item> -->
+  
+              </div>
+            </a-flex>
+            <a-row :gutter="8" justify="end">
+              <a-col>
+                <a-button @click="isInputVisible = false">cancel</a-button>
+              </a-col>
+              <a-col>
+                <a-button type="primary" @click="handleSubmit">submit</a-button>
+              </a-col>
+            </a-row>
+          </template>
+          
+          <template v-else>
+            <div style="text-align: center;">
+              <a-button
+                type="text"
+                shape="circle"
+                size="large"
+                @click="showInput"
+                >
+                <plus-outlined style="color: gray"/>
+              </a-button>
+            </div style="text-align: center;">
+          </template>
+        </div>
       </template>
     </a-list>
   </a-card>
