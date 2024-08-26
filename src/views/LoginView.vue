@@ -20,7 +20,7 @@ const onFinish = async ({ email, password }) => {
 </script>
 
 <template>
-  <div class="m">
+  <div>
     <a-row justify="center">
       <a-col>
         <a-card style="width: 500px">
