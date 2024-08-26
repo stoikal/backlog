@@ -65,7 +65,7 @@ const comparators = {
   created: sortByCreatedDate,
 }
 
-const sortBy = ref('zToA')
+const sortBy = ref('finished')
 
 const sortedLists = computed(() => {
   return [...filteredLists.value]

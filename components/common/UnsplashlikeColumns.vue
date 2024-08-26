@@ -3,6 +3,7 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 const props = defineProps({
   items: Array,
+  customReducer: Function,
 })
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -19,19 +20,26 @@ const columnCount = computed(() => {
 })
 
 const listsColumns = computed(() => {
-  let divider = columnCount.value;
-  let columns = []
-
-  props.items.forEach((item, itemIndex) => {
-    const columnIndex = itemIndex % divider
+  const defaultReducer = (columns, item, itemIndex, columnCount) => {
+    const columnIndex = itemIndex % columnCount
 
     if (columns[columnIndex]) {
       columns[columnIndex].push(item)
     } else {
       columns[columnIndex] = [item]
     }
-  })
 
+    return columns
+  }
+
+  const columns = props.items.reduce((result, item, itemIndex) => {
+    const reducer = typeof props.customReducer === 'function'
+      ? props.customReducer
+      : defaultReducer
+
+    return reducer(result, item, itemIndex, columnCount.value)
+  }, [])
+  
   return columns
 })
 </script>

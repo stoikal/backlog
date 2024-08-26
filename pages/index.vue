@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
 import ListCard from '~/components/home/ListCard.vue';
 import FilteredLists from '~/components/home/FilteredLists.vue';
+import AddGameButton from '~/components/home/AddGameButton/index.vue';
 
 definePageMeta({ middleware: 'auth' })
 
@@ -17,18 +18,42 @@ fetchLists()
 </script>
 
 <template>
-  <FilteredLists :lists="rawLists">
-    <template v-slot="{ lists }">
-      <UnsplashlikeColumns
-        :items="lists"
-      >
-        <template #renderItem="{ item }" :key="item.listId">
-          <ListCard
-            :title="item.title"
-            :items="item.items"
-          />
-        </template>
-      </UnsplashlikeColumns>
-    </template>
-  </FilteredLists>
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <FilteredLists :lists="rawLists">
+      <template v-slot="{ lists }">
+        <UnsplashlikeColumns
+          :items="lists"
+          :customReducer="(columns, item, itemIndex, columnCount) => {
+            let cols = itemIndex === 0
+              ? Array(columnCount).fill(null).map(() => [])
+              : columns
+  
+            let shortestIndex = 0
+  
+            for (let i = 1; i < cols.length; i++) {
+              const prev = cols[shortestIndex].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+              const curr = cols[i].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+  
+              if (curr < prev) {
+                shortestIndex = i
+              }
+            }
+  
+            cols[shortestIndex].push(item)
+  
+            return cols
+          }"
+        >
+          <template #renderItem="{ item }" :key="item.listId">
+            <ListCard
+              :title="item.title"
+              :items="item.items"
+            />
+          </template>
+        </UnsplashlikeColumns>
+      </template>
+    </FilteredLists>
+  </div>
+
+  <AddGameButton />
 </template>
