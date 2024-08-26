@@ -9,7 +9,7 @@
       <a-layout-content
         style="padding: 2rem"
       >
-        hello world
+        <NuxtPage />
       </a-layout-content>
     </a-layout>
   </a-config-provider>
