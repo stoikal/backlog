@@ -16,6 +16,18 @@ const handleDeleteList = async () => {
 
   emit('deleteSuccess')
 }
+
+const handleStatusCheckboxChange = async (item, event) => {
+  await $fetch('/api/list-items/update-status', {
+    method: 'PUT',
+    body: {
+      gameId: item.gameId,
+      isFinished: event.target.checked,
+    }
+  })
+
+  emit('updateSuccess')
+}
 </script>
 
 <template>
@@ -34,6 +46,7 @@ const handleDeleteList = async () => {
           :list-items="props.items"
           @update-success="emit('updateSuccess')"
         />
+  
         <a-popconfirm
           title="Delete?"
           ok-text="Yes"
@@ -58,6 +71,7 @@ const handleDeleteList = async () => {
           <a-space>
             <a-checkbox
               :checked="item.isFinished"
+              @change="handleStatusCheckboxChange(item, $event)"
             />
             <s v-if="item.isFinished">{{ item.gameTitle }}</s>
             <span v-else>{{ item.gameTitle }}</span>

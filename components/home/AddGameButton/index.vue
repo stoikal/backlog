@@ -24,7 +24,7 @@ const handleAddGameSuccess = () => {
     title="Add Game"
     :footer="false"
     destroy-on-close
-    body-style="padding-top: 1rem"
+    :bodyStyle="{ paddingTop: '1rem' }"
     @cancel="isModalOpen = false"
   >
     <AddGameForm
