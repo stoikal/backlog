@@ -28,6 +28,23 @@ const handleStatusCheckboxChange = async (item, event) => {
 
   emit('updateSuccess')
 }
+
+const sortedItems = computed(() => {
+  const sorted = props.items
+    .sort((a, b) => {
+      // finished items last
+      if (!a.isFinished && b.isFinished) return -1
+      if (a.isFinished && !b.isFinished) return 1
+
+      // if finished statuses are the same then sort alphabetically
+      if (a.gameTitle < b.gameTitle) return -1
+      if (a.gameTitle > b.gameTitle) return 1
+
+      return 0
+    })
+
+  return sorted
+})
 </script>
 
 <template>
@@ -43,7 +60,7 @@ const handleStatusCheckboxChange = async (item, event) => {
           :key="props.listId"
           :list-id="props.listId"
           :list-title="props.title"
-          :list-items="props.items"
+          :list-items="sortedItems"
           @update-success="emit('updateSuccess')"
         />
   
@@ -64,7 +81,7 @@ const handleStatusCheckboxChange = async (item, event) => {
     </template>
   
     <a-list
-      :data-source="props.items"
+      :data-source="sortedItems"
     >
       <template #renderItem="{ item }">
         <a-list-item>
