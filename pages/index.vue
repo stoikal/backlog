@@ -9,12 +9,12 @@ definePageMeta({ middleware: 'auth' })
 
 const rawLists = ref([])
 
-const fetchLists = async () => {
+const loadLists = async () => {
   const res = await $fetch('/api/lists')
   rawLists.value = res.data
 }
 
-fetchLists()
+loadLists()
 </script>
 
 <template>
@@ -55,5 +55,8 @@ fetchLists()
     </FilteredLists>
   </div>
 
-  <AddGameButton />
+  <AddGameButton
+    @success="loadLists"
+    @list-success="loadLists"
+  />
 </template>
