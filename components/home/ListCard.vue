@@ -1,4 +1,6 @@
 <script setup>
+import EditListButton from './EditListButton.vue';
+
 const props = defineProps({
   listId: String,
   title: String,
@@ -6,7 +8,7 @@ const props = defineProps({
   readOnly: Boolean,
 })
 
-const emit = defineEmits(['deleteSuccess'])
+const emit = defineEmits(['deleteSuccess', 'updateSuccess'])
 
 const handleDeleteList = async () => {
   await $fetch(`/api/lists/${props.listId}`, { method: 'DELETE' })
@@ -24,6 +26,13 @@ const handleDeleteList = async () => {
   >
     <template #extra v-if="!props.readOnly">
       <a-space>
+        <EditListButton
+          :key="props.listId"
+          :list-id="props.listId"
+          :list-title="props.title"
+          :list-items="props.items"
+          @update-success="emit('updateSuccess')"
+        />
         <a-popconfirm
           title="Delete?"
           ok-text="Yes"
@@ -54,7 +63,10 @@ const handleDeleteList = async () => {
           </a-space>
         </a-list-item>
       </template>
+
+      <template #footer></template>
     </a-list>
+
   </a-card>
 </template>
 

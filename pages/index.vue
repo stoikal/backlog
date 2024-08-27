@@ -54,6 +54,7 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
               :items="item.items"
               :read-only="false"
               @delete-success="loadLists"
+              @update-success="loadLists"
             />
           </template>
         </UnsplashlikeColumns>
