@@ -1,6 +1,13 @@
 <script setup>
 import { LogoutOutlined } from '@ant-design/icons-vue'
 
+useHead({
+  title: 'Games Backlog',
+  meta: [
+    { name: 'description', content: 'Backlog of Games' }
+  ],
+})
+
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
