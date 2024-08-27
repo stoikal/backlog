@@ -28,6 +28,8 @@ const logoutAndRedirect = async () => {
             <template v-if="user">
               <a-button
                 shape="circle"
+                type="primary"
+                danger
                 @click="logoutAndRedirect"
               >
                 <template #icon>

@@ -25,6 +25,7 @@ const tempDeleteItem = (item) => {
   listItemsEdit.value = listItemsEdit.value.filter(i => i !== item)
 }
 
+// TODO add confirmation
 const submitEdit = async () => {
   const gameIdsToDelete = props.listItems
     .filter((item) => listItemsEdit.value.every((i) => i.gameId !== item.gameId))
@@ -65,7 +66,7 @@ const submitEdit = async () => {
     title="Edit"
     :open="isModalOpen"
     @cancel="isModalOpen = false"
-    @ok="submitEdit"
+    @ok="submitEdit" 
   >
     <a-form
       :label-col="{ span: 24 }"
