@@ -15,6 +15,28 @@ const loadLists = async () => {
 }
 
 loadLists()
+
+// group list-cards into columns
+const customReducer = (columns, item, itemIndex, columnCount) => {
+  let cols = itemIndex === 0
+    ? Array(columnCount).fill(null).map(() => [])
+    : columns
+
+  let shortestIndex = 0
+
+  for (let i = 1; i < cols.length; i++) {
+    const prev = cols[shortestIndex].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+    const curr = cols[i].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+
+    if (curr < prev) {
+      shortestIndex = i
+    }
+  }
+
+  cols[shortestIndex].push(item)
+
+  return cols
+}
 </script>
 
 <template>
@@ -23,31 +45,15 @@ loadLists()
       <template v-slot="{ lists }">
         <UnsplashlikeColumns
           :items="lists"
-          :customReducer="(columns, item, itemIndex, columnCount) => {
-            let cols = itemIndex === 0
-              ? Array(columnCount).fill(null).map(() => [])
-              : columns
-  
-            let shortestIndex = 0
-  
-            for (let i = 1; i < cols.length; i++) {
-              const prev = cols[shortestIndex].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
-              const curr = cols[i].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
-  
-              if (curr < prev) {
-                shortestIndex = i
-              }
-            }
-  
-            cols[shortestIndex].push(item)
-  
-            return cols
-          }"
+          :customReducer="customReducer"
         >
           <template #renderItem="{ item }" :key="item.listId">
             <ListCard
+              :listId="item.listId"
               :title="item.title"
               :items="item.items"
+              :read-only="false"
+              @delete-success="loadLists"
             />
           </template>
         </UnsplashlikeColumns>
