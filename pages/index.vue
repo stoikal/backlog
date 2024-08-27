@@ -47,14 +47,16 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
           :items="lists"
           :customReducer="customReducer"
         >
-          <template #renderItem="{ item }" :key="item.listId">
+          <template #renderItem="{ item }">
             <ListCard
+              :key="item.listId"
               :listId="item.listId"
               :title="item.title"
               :items="item.items"
               :read-only="false"
               @delete-success="loadLists"
               @update-success="loadLists"
+              @create-item-success="loadLists"
             />
           </template>
         </UnsplashlikeColumns>

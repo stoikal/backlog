@@ -1,5 +1,6 @@
 <script setup>
 import EditListButton from './EditListButton.vue';
+import AddListItemForm from './AddListItemForm.vue';
 
 const props = defineProps({
   listId: String,
@@ -8,7 +9,7 @@ const props = defineProps({
   readOnly: Boolean,
 })
 
-const emit = defineEmits(['deleteSuccess', 'updateSuccess'])
+const emit = defineEmits(['deleteSuccess', 'updateSuccess', 'createItemSuccess'])
 
 const handleDeleteList = async () => {
   await $fetch(`/api/lists/${props.listId}`, { method: 'DELETE' })
@@ -64,7 +65,17 @@ const handleDeleteList = async () => {
         </a-list-item>
       </template>
 
-      <template #footer></template>
+      <template #footer>
+        <div
+          v-if="!props.readOnly"
+          style="padding: 0 1rem"
+        >
+          <AddListItemForm
+            :list-id="props.listId"
+            @success="emit('createItemSuccess')"
+          />
+        </div>
+      </template>
     </a-list>
 
   </a-card>
