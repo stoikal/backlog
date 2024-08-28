@@ -28,9 +28,11 @@ const selectedLists = ref([])
 watch(() => selectedGame.value?.value, (gameId) => {
   $fetch(`/api/lists/by-game/${gameId}`)
     .then((res) => {
-      const listIds = res.data.map((list) => list.listId)
-      selectedLists.value = listIds
-      listsContainingSelectedGame.value = listIds
+      if (res.data) {
+        const listIds = res.data.map((list) => list.listId)
+        selectedLists.value = listIds
+        listsContainingSelectedGame.value = listIds
+      }
     })
 })
 
@@ -41,8 +43,15 @@ const handleListSuccess = () => {
 
 const submit = async () => {
   const gameId = selectedGame.value?.value
-
+  
   if (gameId) {
+    const game = selectedGame.value.option.game
+
+    await $fetch('/api/games', {
+      method: 'POST',
+      body: game
+    })
+
     const listItemsToCreate = selectedLists.value
       .filter((list) => !listsContainingSelectedGame.value.includes(list))
       .map((listId) => ({
@@ -74,6 +83,25 @@ const submit = async () => {
     emit('success')
   }
 }
+
+const getGenres = (game = {}) => {
+  return game.genres
+    ?.map((item) => item.name)
+    .join(', ')
+}
+
+const getPlatforms = (game = {}) => {
+  return game.platforms
+    ?.map((item) => item.name)
+    .join(', ')
+}
+
+const getReleaseDate = (game = {}) => {
+  if (!game.firstReleaseDate) return ''
+
+  return new Date(game.firstReleaseDate * 1000)
+    .toISOString().slice(0, 10);
+}
 </script>
 
 <template>
@@ -83,24 +111,26 @@ const submit = async () => {
       size="large"
       style="width: 100%"
     />
-  
+
     <div style="padding: .5rem .8rem;">
       <div>
-        {{ selectedGame?.option.game.genres?.split('||').join(', ') }}
+        {{ getGenres(selectedGame?.option.data) }}
       </div>
       <div>
-        {{ selectedGame?.option.game.platforms?.split('||').join(', ') }}
+        {{ getPlatforms(selectedGame?.option.data) }}
       </div>
       <div>
-        {{ selectedGame?.option.game.released }}
+        {{ getReleaseDate(selectedGame?.option.data) }}
       </div>
     </div>
   </div>
 
-  <a-checkbox-group
-    v-model:value="selectedLists"
-    :options="checkboxOptions"
-  />
+  <div>
+    <a-checkbox-group
+      v-model:value="selectedLists"
+      :options="checkboxOptions"
+    />
+  </div>
 
   <AddListForm
     @success="handleListSuccess"

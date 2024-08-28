@@ -17,6 +17,13 @@ const handleSubmit = async () => {
   const gameId = selectedGame.value.value
 
   if (gameId) {
+    const game = selectedGame.value.option.data
+
+    await $fetch('/api/games', {
+      method: 'POST',
+      body: game
+    })
+
     await $fetch('/api/list-items', {
       method: 'POST',
       body: {
@@ -36,18 +43,11 @@ const handleSubmit = async () => {
 
 <template>
   <template v-if="isInputVisible">
-    <a-flex
-      gap="small"
-      align="center"
-      style="margin-bottom: .5rem; width: 100%;"
-    >
-      <div style="flex: 1">
-        <GameSelect
-          v-model:value="selectedGame"
-          style="width: 100%"
-        />
-      </div>
-    </a-flex>
+    <GameSelect
+      v-model:value="selectedGame"
+      style="width: 100%; margin-bottom: .5rem;"
+    />
+
     <a-row :gutter="8" justify="end">
       <a-col>
         <a-button @click="isInputVisible = false">cancel</a-button>

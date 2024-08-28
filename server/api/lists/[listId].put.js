@@ -6,6 +6,7 @@ export default eventHandler(async (event) => {
   const body = await readBody(event)
 
   const { data, error } = await client
+    .schema('games_backlog')
     .from('lists')
     .update({ title: body.title })
     .eq('id', listId)

@@ -19,7 +19,7 @@ const fetchGames = (name) => {
   state.data = [];
   state.fetching = true;
 
-  $fetch('/api/games', { params: { q: name }})
+  $fetch('/api/games', { params: { search: name }})
     .then((res) => {
       if (fetchId !== lastFetchId) {
         // for fetch callback order
@@ -27,10 +27,11 @@ const fetchGames = (name) => {
       }
 
       const data = res.data.map((game) => ({
-        game,
+        data: game,
         label: game.name,
         value: game.id,
       }));
+
       state.data = data;
       state.fetching = false;
     });
