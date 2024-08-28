@@ -13,6 +13,13 @@ const state = reactive({
   fetching: false,
 });
 
+const getReleaseYear = (game = {}) => {
+  if (!game.firstReleaseDate) return 'N/A'
+
+  return new Date(game.firstReleaseDate * 1000)
+    .getFullYear()
+}
+
 const fetchGames = (name) => {
   lastFetchId += 1;
   const fetchId = lastFetchId;
@@ -28,7 +35,7 @@ const fetchGames = (name) => {
 
       const data = res.data.map((game) => ({
         data: game,
-        label: game.name,
+        label: `${game.name} (${getReleaseYear(game)})`,
         value: game.id,
       }));
 
