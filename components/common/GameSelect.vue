@@ -13,13 +13,20 @@ const state = reactive({
   fetching: false,
 });
 
+const getReleaseYear = (game = {}) => {
+  if (!game.firstReleaseDate) return 'N/A'
+
+  return new Date(game.firstReleaseDate * 1000)
+    .getFullYear()
+}
+
 const fetchGames = (name) => {
   lastFetchId += 1;
   const fetchId = lastFetchId;
   state.data = [];
   state.fetching = true;
 
-  $fetch('/api/games', { params: { q: name }})
+  $fetch('/api/games', { params: { search: name }})
     .then((res) => {
       if (fetchId !== lastFetchId) {
         // for fetch callback order
@@ -27,10 +34,11 @@ const fetchGames = (name) => {
       }
 
       const data = res.data.map((game) => ({
-        game,
-        label: game.name,
+        data: game,
+        label: `${game.name} (${getReleaseYear(game)})`,
         value: game.id,
       }));
+
       state.data = data;
       state.fetching = false;
     });

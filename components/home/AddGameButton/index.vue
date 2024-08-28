@@ -5,11 +5,6 @@ import AddGameForm from "./AddGameForm/index.vue"
 const emit = defineEmits(['success', 'listSuccess'])
 
 const isModalOpen = ref(false)
-
-const handleAddGameSuccess = () => {
-  isModalOpen.value = false
-  emit('success')
-}
 </script>
 
 <template>
@@ -28,7 +23,8 @@ const handleAddGameSuccess = () => {
     @cancel="isModalOpen = false"
   >
     <AddGameForm
-      @success="handleAddGameSuccess"
+      @close="isModalOpen.value = false"
+      @success="emit('success')"
       @list-success="emit('listSuccess')"
     />
   </a-modal>

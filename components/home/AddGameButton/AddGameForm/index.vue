@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import GameSelect from '~/components/common/GameSelect.vue';
 import AddListForm from './AddListForm.vue';
 
-const emit = defineEmits(['success', 'listSuccess'])
+const emit = defineEmits(['success', 'listSuccess', 'close'])
 
 const lists = ref([])
 
@@ -26,12 +26,16 @@ const listsContainingSelectedGame = ref([])
 const selectedLists = ref([])
 
 watch(() => selectedGame.value?.value, (gameId) => {
-  $fetch(`/api/lists/by-game/${gameId}`)
-    .then((res) => {
-      const listIds = res.data.map((list) => list.listId)
-      selectedLists.value = listIds
-      listsContainingSelectedGame.value = listIds
-    })
+  if (gameId) {
+    $fetch(`/api/lists/by-game/${gameId}`)
+      .then((res) => {
+        if (res.data) {
+          const listIds = res.data.map((list) => list.listId)
+          selectedLists.value = listIds
+          listsContainingSelectedGame.value = listIds
+        }
+      })
+  }
 })
 
 const handleListSuccess = () => {
@@ -39,10 +43,17 @@ const handleListSuccess = () => {
   emit('listSuccess')
 }
 
-const submit = async () => {
+const save = async () => {
   const gameId = selectedGame.value?.value
-
+  
   if (gameId) {
+    const game = selectedGame.value.option.data
+
+    await $fetch('/api/games', {
+      method: 'POST',
+      body: game
+    })
+
     const listItemsToCreate = selectedLists.value
       .filter((list) => !listsContainingSelectedGame.value.includes(list))
       .map((listId) => ({
@@ -70,9 +81,37 @@ const submit = async () => {
         }
       })
     }
-  
+
     emit('success')
+
+    selectedGame.value = null
+    listsContainingSelectedGame.value = []
+    selectedLists.value = []
   }
+}
+
+const saveAndClose = async () => {
+  await save()
+  emit('close')
+}
+
+const getGenres = (game = {}) => {
+  return game.genres
+    ?.map((item) => item.name)
+    .join(', ')
+}
+
+const getPlatforms = (game = {}) => {
+  return game.platforms
+    ?.map((item) => item.name)
+    .join(', ')
+}
+
+const getReleaseDate = (game = {}) => {
+  if (!game.firstReleaseDate) return ''
+
+  return new Date(game.firstReleaseDate * 1000)
+    .toISOString().slice(0, 10);
 }
 </script>
 
@@ -83,35 +122,45 @@ const submit = async () => {
       size="large"
       style="width: 100%"
     />
-  
+
     <div style="padding: .5rem .8rem;">
       <div>
-        {{ selectedGame?.option.game.genres?.split('||').join(', ') }}
+        {{ getGenres(selectedGame?.option.data) }}
       </div>
       <div>
-        {{ selectedGame?.option.game.platforms?.split('||').join(', ') }}
+        {{ getPlatforms(selectedGame?.option.data) }}
       </div>
       <div>
-        {{ selectedGame?.option.game.released }}
+        {{ getReleaseDate(selectedGame?.option.data) }}
       </div>
     </div>
   </div>
 
-  <a-checkbox-group
-    v-model:value="selectedLists"
-    :options="checkboxOptions"
-  />
+  <div>
+    <a-checkbox-group
+      v-model:value="selectedLists"
+      :options="checkboxOptions"
+    />
+  </div>
 
   <AddListForm
     @success="handleListSuccess"
   />
 
-  <a-row justify="end">
+  <a-row justify="end" gutter="12">
     <a-col>
       <a-button
-        @click="submit"
+        @click="save"
       >
-        submit
+        Save
+      </a-button>
+    </a-col>
+    <a-col>
+      <a-button
+        type="primary"
+        @click="saveAndClose"
+      >
+        Save and Close
       </a-button>
     </a-col>
   </a-row>

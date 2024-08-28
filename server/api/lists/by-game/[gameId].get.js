@@ -5,6 +5,7 @@ export default eventHandler(async (event) => {
   const gameId = getRouterParam(event, 'gameId')
 
   let { data: rawData } = await client
+    .schema('games_backlog')
     .from('list_items')
     .select(`
       ...lists (*)  

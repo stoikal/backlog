@@ -9,6 +9,7 @@ export default eventHandler(async (event) => {
   }))
 
   const { data } = await client
+    .schema('games_backlog')
     .from('list_items')
     .insert(listItems)
     .select()

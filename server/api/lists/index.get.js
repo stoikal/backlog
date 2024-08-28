@@ -4,6 +4,7 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
 
   let { data: rawData, error } = await client
+    .schema('games_backlog')
     .from('lists')
     .select(`
       id,
@@ -13,14 +14,14 @@ export default eventHandler(async (event) => {
         game_id,
         ...games (
           name,
-          genres,
-          platforms,
-          released,
-          slug,
-          game_statuses (*)
+          game_statuses (
+            is_finished
+          )
         )
       )
     `)
+    .order('title')
+
 
   const data = rawData?.map((list) => ({
     listId: list.id,
@@ -29,11 +30,7 @@ export default eventHandler(async (event) => {
     items: list.list_items?.map((item) => ({
       gameId: item.game_id,
       gameTitle: item.name,
-      genres: item.genres,
-      platforms: item.platforms,
-      released: item.released,
-      slug: item.slug,
-      isFinished: item.game_statuses?.[0]?.is_finished
+      isFinished: item.game_statuses[0]?.is_finished
     }))
   }))
 
