@@ -20,6 +20,7 @@ export default eventHandler(async (event) => {
         )
       )
     `)
+    .order('title')
 
 
   const data = rawData?.map((list) => ({

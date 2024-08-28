@@ -84,7 +84,7 @@ const sortedItems = computed(() => {
       :data-source="sortedItems"
     >
       <template #renderItem="{ item }">
-        <a-list-item>
+        <a-list-item :key="item.gameId">
           <a-space>
             <a-checkbox
               :checked="item.isFinished"
