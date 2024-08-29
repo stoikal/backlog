@@ -4,6 +4,8 @@ import { useDebounceFn } from '@vueuse/core'
 
 let lastFetchId = 0;
 
+//  INI ADALAH COMMENT
+
 const props = defineProps({
   size: String,
 })
