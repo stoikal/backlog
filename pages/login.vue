@@ -4,7 +4,7 @@ import { reactive } from 'vue'
 definePageMeta({ middleware: 'auth' })
 
 const supabase = useSupabaseClient()
-
+// komen yang lain lagi
 const formState = reactive({
   email: '',
   password: '',
