@@ -49,8 +49,8 @@ const fetchGames = (name) => {
         value: game.id,
       }));
 
-      state.data = data;
-      state.fetching = false;
+      state.data = data
+      state.fetching = false
     });
 };
 
@@ -58,7 +58,8 @@ const debouncedFetchGames = useDebounceFn(fetchGames, 800)
 
 const model = defineModel()
 watch(() => model.value, () => {
-  state.fetching = false;
+  state.data = []
+  state.fetching = false
 });
 
 watch(() => props.platform, () => {
