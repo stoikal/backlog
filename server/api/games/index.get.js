@@ -41,12 +41,13 @@ export default eventHandler(async (event) => {
 
   if (!user) return { data: null }
 
-  const { search } = getQuery(event)
+  const { search, platform } = getQuery(event)
   const accessToken = await getToken()
 
   let body = 'fields name, first_release_date, platforms.name, genres.name;'
 
   if (search) body += `search "${search}";`
+  if (platform) body += `where platforms = (${platform});`
   body += 'limit 40;'
 
   try {

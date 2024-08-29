@@ -1,12 +1,15 @@
 <script setup>
-import { reactive, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core'
 
 let lastFetchId = 0;
 
 const props = defineProps({
   size: String,
+  platform: Number,
 })
+
+const searchKey = ref('')
 
 const state = reactive({
   data: [],
@@ -25,8 +28,15 @@ const fetchGames = (name) => {
   const fetchId = lastFetchId;
   state.data = [];
   state.fetching = true;
+  searchKey.value = name
 
-  $fetch('/api/games', { params: { search: name }})
+  const params = {
+    search: name,
+  }
+
+  if (props.platform) params.platform = props.platform
+
+  $fetch('/api/games', { params })
     .then((res) => {
       if (fetchId !== lastFetchId) {
         // for fetch callback order
@@ -48,9 +58,12 @@ const debouncedFetchGames = useDebounceFn(fetchGames, 800)
 
 const model = defineModel()
 watch(() => model.value, () => {
-  state.data = [];
   state.fetching = false;
 });
+
+watch(() => props.platform, () => {
+  debouncedFetchGames(searchKey.value)
+})
 
 const handleSelect = (value) => {
   model.value = value

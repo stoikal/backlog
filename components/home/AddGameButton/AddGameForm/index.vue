@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import GameSelect from '~/components/common/GameSelect.vue';
+import PlatformSelect from '~/components/common/PlatformSelect.vue';
 import AddListForm from './AddListForm.vue';
 
 const emit = defineEmits(['success', 'listSuccess', 'close'])
@@ -113,15 +114,29 @@ const getReleaseDate = (game = {}) => {
   return new Date(game.firstReleaseDate * 1000)
     .toISOString().slice(0, 10);
 }
+
+const selectedPlatform = ref(null)
 </script>
 
 <template>
   <div style="margin-bottom: 1rem;">
-    <GameSelect
-      v-model:value="selectedGame"
-      size="large"
-      style="width: 100%"
-    />
+    <a-row gutter="16">
+      <a-col span="18">
+        <GameSelect
+          v-model:value="selectedGame"
+          :platform="selectedPlatform"
+          size="large"
+          style="width: 100%"
+        />
+      </a-col>
+      <a-col span="6">
+        <PlatformSelect
+          v-model:value="selectedPlatform"
+          size="large"
+          style="width: 100%"
+        />
+      </a-col>
+    </a-row>
 
     <div style="padding: .5rem .8rem;">
       <div>
