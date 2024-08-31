@@ -20,6 +20,7 @@ const isModalOpen = ref(false)
     :footer="false"
     destroy-on-close
     :bodyStyle="{ paddingTop: '1rem' }"
+    :style="{ width: '900px', maxWidth: '100% '}"
     @cancel="isModalOpen = false"
   >
     <AddGameForm

@@ -64,8 +64,19 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
     </FilteredLists>
   </div>
 
-  <AddGameButton
-    @success="loadLists"
-    @list-success="loadLists"
-  />
+  <a-float-button-group
+  :open="false"
+  shape="circle" :style="{ right: '24px' }"
+  >
+    <AddGameButton
+      @success="loadLists"
+      @list-success="loadLists"
+    />
+
+    <a-float-button>
+      <template #icon>
+        <UnorderedListOutlined />
+      </template>
+    </a-float-button>
+  </a-float-button-group>
 </template>
