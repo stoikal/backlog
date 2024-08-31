@@ -93,9 +93,9 @@ const sortedLists = computed(() => {
           placeholder="sort"
           style="min-width: 160px"
           :options="[
+            { value: 'finished', label: 'finished count' },
             { value: 'created', label: 'created date' },
             { value: 'alphabet', label: 'alphabetical order' },
-            { value: 'finished', label: 'finished count' },
           ]"
         />
       </a-space>

@@ -16,10 +16,12 @@ const loadLists = async () => {
 loadLists()
 
 const checkboxOptions = computed(() => {
-  return lists.value.map((list) => ({
-    label: list.title,
-    value: list.listId
-  }))
+  return lists.value
+    .filter((list) => !list.pseudo)
+    .map((list) => ({
+      label: list.title,
+      value: list.listId
+    }))
 })
 
 const selectedGame = ref(null)
@@ -119,48 +121,50 @@ const selectedPlatform = ref(null)
 </script>
 
 <template>
+  <a-row gutter="16" style="margin-bottom: 1rem;">
+    <a-col span="18">
+      <GameSelect
+        v-model:value="selectedGame"
+        :platform="selectedPlatform"
+        size="large"
+        style="width: 100%"
+      />
+
+      <div style="padding: .5rem .8rem;">
+        <div>
+          {{ getGenres(selectedGame?.option.data) }}
+        </div>
+        <div>
+          {{ getPlatforms(selectedGame?.option.data) }}
+        </div>
+        <div>
+          {{ getReleaseDate(selectedGame?.option.data) }}
+        </div>
+      </div>
+    </a-col>
+    <a-col span="6">
+      <PlatformSelect
+        v-model:value="selectedPlatform"
+        size="large"
+        style="width: 100%"
+      />
+    </a-col>
+  </a-row>
+
+  <a-row gutter="16">
+    <a-col span="18">
+      <a-checkbox-group
+        v-model:value="selectedLists"
+        :options="checkboxOptions"
+      />
+    </a-col>
+  </a-row>
+
   <div style="margin-bottom: 1rem;">
-    <a-row gutter="16">
-      <a-col span="18">
-        <GameSelect
-          v-model:value="selectedGame"
-          :platform="selectedPlatform"
-          size="large"
-          style="width: 100%"
-        />
-      </a-col>
-      <a-col span="6">
-        <PlatformSelect
-          v-model:value="selectedPlatform"
-          size="large"
-          style="width: 100%"
-        />
-      </a-col>
-    </a-row>
-
-    <div style="padding: .5rem .8rem;">
-      <div>
-        {{ getGenres(selectedGame?.option.data) }}
-      </div>
-      <div>
-        {{ getPlatforms(selectedGame?.option.data) }}
-      </div>
-      <div>
-        {{ getReleaseDate(selectedGame?.option.data) }}
-      </div>
-    </div>
-  </div>
-
-  <div>
-    <a-checkbox-group
-      v-model:value="selectedLists"
-      :options="checkboxOptions"
+    <AddListForm
+      @success="handleListSuccess"
     />
   </div>
-
-  <AddListForm
-    @success="handleListSuccess"
-  />
 
   <a-row justify="end" gutter="12">
     <a-col>
