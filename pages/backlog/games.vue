@@ -53,7 +53,7 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
               :listId="item.listId"
               :title="item.title"
               :items="item.items"
-              :read-only="false"
+              :read-only="item.pseudo"
               @delete-success="loadLists"
               @update-success="loadLists"
               @create-item-success="loadLists"
