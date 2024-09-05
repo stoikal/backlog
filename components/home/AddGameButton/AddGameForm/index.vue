@@ -183,5 +183,4 @@ const selectedPlatform = ref(null)
       </a-button>
     </a-col>
   </a-row>
-
 </template>

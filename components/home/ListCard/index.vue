@@ -1,6 +1,7 @@
 <script setup>
 import EditListButton from './EditListButton.vue';
 import AddListItemForm from './AddListItemForm.vue';
+import ListCardItem from './ListCardItem/index.vue'
 
 const props = defineProps({
   listId: String,
@@ -90,8 +91,12 @@ const sortedItems = computed(() => {
               :checked="item.isFinished"
               @change="handleStatusCheckboxChange(item, $event)"
             />
-            <s v-if="item.isFinished">{{ item.gameTitle }}</s>
-            <span v-else>{{ item.gameTitle }}</span>
+            <ListCardItem
+              :isFinished="item.isFinished"
+              :gameTitle="item.gameTitle"
+              :gameId="item.gameId"
+              @success="emit('updateSuccess')"
+            />
           </a-space>
         </a-list-item>
       </template>
