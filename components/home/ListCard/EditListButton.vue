@@ -54,7 +54,6 @@ const submitEdit = async () => {
   <a-button
     type="text"
     shape="circle"
-    :size="size"
     @click="openModal"
   >
     <template #icon>

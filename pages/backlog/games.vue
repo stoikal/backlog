@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
-import ListCard from '~/components/home/ListCard.vue';
+import ListCard from '~/components/home/ListCard/index.vue';
 import FilteredLists from '~/components/home/FilteredLists.vue';
 import AddGameButton from '~/components/home/AddGameButton/index.vue';
 import AddListButton from '~/components/home/AddListButton/index.vue'

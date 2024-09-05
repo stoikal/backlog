@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
-import GameSelect from '../common/GameSelect.vue';
+import GameSelect from '../../common/GameSelect.vue';
 
 const props = defineProps({
   listId: String,
