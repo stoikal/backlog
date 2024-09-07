@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import CheckboxGroup from '@/components/common/CheckboxGroup.vue';
 
 const props = defineProps({
   gameId: Number,
@@ -100,7 +101,7 @@ const save = async () => {
 </script>
 
 <template>
-  <div style="margin-bottom: 1rem;">
+  <div class="mb-3 space-y-1">
     <h2 style="margin-bottom: 0;">
       <strong>
         {{ game.name }}
@@ -117,21 +118,18 @@ const save = async () => {
     </div>
   </div>
 
-  <div style="margin-bottom: 1rem;">
-    <a-checkbox-group
-      v-model:value="selectedLists"
+  <div class="mb-4">
+    <CheckboxGroup
+      v-model="selectedLists"
       :options="checkboxOptions"
     />
   </div>
 
-  <a-row justify="end" gutter="12">
-    <a-col>
-      <a-button
-        type="primary"
-        @click="save"
-      >
-        Save
-      </a-button>
-    </a-col>
-  </a-row>
+  <div class="text-end">
+    <Button
+      @click="save"
+    >
+      Save
+    </Button>
+  </div>
 </template>

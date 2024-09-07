@@ -1,8 +1,22 @@
 <script setup>
-import EditListButton from './EditListButton.vue';
-import AddListItemForm from './AddListItemForm.vue';
-import ListCardItem from './ListCardItem/index.vue';
-import GameComment from "./GameComment/index.vue";
+import { Trash } from 'lucide-vue-next';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import EditListButton from './EditListButton.vue'
+import AddListItemForm from './AddListItemForm.vue'
+import ListCardItem from './ListCardItem/index.vue'
+import GameComment from "./GameComment/index.vue"
 
 const props = defineProps({
   listId: String,
@@ -19,12 +33,12 @@ const handleDeleteList = async () => {
   emit('deleteSuccess')
 }
 
-const handleStatusCheckboxChange = async (item, event) => {
+const handleStatusCheckboxChange = async (item, checked) => {
   await $fetch('/api/list-items/update-status', {
     method: 'PUT',
     body: {
       gameId: item.gameId,
-      isFinished: event.target.checked,
+      isFinished: checked,
     }
   })
 
@@ -47,89 +61,82 @@ const sortedItems = computed(() => {
 
   return sorted
 })
+
+const isDeleteConfirmOpen = ref(false)
 </script>
 
 <template>
-  <a-card
-    :title="props.title"
-    :bodyStyle="{ padding: 0 }"
-    style="margin-bottom: 2rem; padding: 0"
-    hoverable
-  >
-    <template #extra v-if="!props.readOnly">
-      <a-space>
+  <Card class="mb-6">
+    <CardHeader class="border-b flex-row justify-between items-center">
+      <CardTitle class="mb-0 h3">
+        {{ props.title }}
+      </CardTitle>
+      <!-- <div  class="flex justify-between items-center"> -->
+      <div class="space-x-2" v-if="!props.readOnly">
         <EditListButton
-          :key="props.listId"
           :list-id="props.listId"
           :list-title="props.title"
           :list-items="sortedItems"
           @update-success="emit('updateSuccess')"
         />
-  
-        <a-popconfirm
-          title="Delete?"
-          ok-text="Yes"
-          cancel-text="No"
-          size="large"
-          @confirm="handleDeleteList"
-        >
-          <a-button type="text" shape="circle">
-            <template #icon>
-              <delete-outlined style="color: salmon" />
-            </template>
-          </a-button>
-        </a-popconfirm>
-      </a-space>
-    </template>
-  
-    <a-list
-      :data-source="sortedItems"
-    >
-      <template #renderItem="{ item }">
-        <a-list-item
-          :key="item.gameId"
-        >
-          <a-space>
-            <a-checkbox
+        <Popover v-model:open="isDeleteConfirmOpen">
+          <PopoverTrigger as-child>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="rounded-full"
+            >
+              <Trash class="text-red-900"/>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div>
+              <p>
+                Delete?
+              </p>
+              <div class="text-end space-x-4">
+                <Button variant="outline" @click="isDeleteConfirmOpen = false">No</Button>
+                <Button @click="handleDeleteList">Yes</Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+      <!-- </div> -->
+    </CardHeader>
+
+    <CardContent>
+      <template v-for="item in sortedItems" :key="item.gameId">
+        <div class="py-6 border-b items-center flex gap-x-2 justify-between">
+          <div class="items-center flex gap-x-2">
+            <Checkbox
               :checked="item.isFinished"
-              @change="handleStatusCheckboxChange(item, $event)"
+              @update:checked="handleStatusCheckboxChange(item, $event)"
             />
+
             <ListCardItem
               :isFinished="item.isFinished"
               :gameTitle="item.gameTitle"
               :gameId="item.gameId"
               @success="emit('updateSuccess')"
             />
-          </a-space>
-
-          <template #actions>
+          </div>
+          <div>
             <GameComment
               :gameId="item.gameId"
               :gameTitle="item.gameTitle"
             />
-          </template>
-        </a-list-item>
-      </template>
-
-      <template #footer>
-        <div
-          v-if="!props.readOnly"
-          style="padding: 0 1rem"
-        >
-          <AddListItemForm
-            :list-id="props.listId"
-            @success="emit('createItemSuccess')"
-          />
+          </div>
         </div>
       </template>
-    </a-list>
+    </CardContent>
 
-  </a-card>
+    <CardFooter class="justify-center">
+      <AddListItemForm
+        v-if="!props.readOnly"
+        :list-id="props.listId"
+        @success="emit('createItemSuccess')"
+      />
+    </CardFooter>
+  </Card>
 </template>
-
-<style>
-.ant-checkbox-checked .ant-checkbox-inner {
-  background-color: lightgray;
-  border-color: lightgray
-}
-</style>

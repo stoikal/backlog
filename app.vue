@@ -24,7 +24,7 @@ const logoutAndRedirect = async () => {
 <template> 
   <a-config-provider>
     <header>
-      <div class="text-end p-4">
+      <div class="text-end p-4 px-12">
         <template v-if="user">
           <Button
             class="rounded-full"

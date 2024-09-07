@@ -1,7 +1,6 @@
 import { serverSupabaseClient } from '#supabase/server'
 
 const getCombinedGameStatuses = async (client) => {
-  return { data: [] }
   const { data: rawData, error } = await client
     .rpc('get_combined_game_statuses')
 
@@ -59,7 +58,6 @@ const getLists = async (client) => {
       )
     `)
     .order('title')
-    .limit(3)
 
   const data = rawData?.map((list) => ({
     listId: list.id,

@@ -49,9 +49,8 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
           :items="lists"
           :customReducer="customReducer"
         >
-          <template #renderItem="{ item }">
+          <template #renderItem="{ item }" :key="item.listId">
             <ListCard
-              :key="item.listId"
               :listId="item.listId"
               :title="item.title"
               :items="item.items"

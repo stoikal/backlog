@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { Plus } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button'
 import GameSelect from '../../common/GameSelect.vue';
 
 const props = defineProps({
@@ -13,7 +14,7 @@ const isInputVisible = ref(false)
 
 const selectedGame = ref(null)
 
-const handleSubmit = async () => {
+const save = async () => {
   const gameId = selectedGame.value.value
 
   if (gameId) {
@@ -43,31 +44,29 @@ const handleSubmit = async () => {
 
 <template>
   <template v-if="isInputVisible">
-    <GameSelect
-      v-model:value="selectedGame"
-      style="width: 100%; margin-bottom: .5rem;"
-    />
-
-    <a-row :gutter="8" justify="end">
-      <a-col>
-        <a-button @click="isInputVisible = false">cancel</a-button>
-      </a-col>
-      <a-col>
-        <a-button type="primary" @click="handleSubmit">submit</a-button>
-      </a-col>
-    </a-row>
+    <div class="w-full">
+      <GameSelect
+        size="large"
+        v-model:value="selectedGame"
+        style="width: 100%; margin-bottom: 1rem;"
+      />
+      <div class="space-x-4 text-end">
+        <Button variant="outline" @click="isInputVisible = false">cancel</Button>
+        <Button @click="save">save</Button>
+      </div>
+    </div>
   </template>
   
   <template v-else>
     <div style="text-align: center;">
-      <a-button
-        type="text"
-        shape="circle"
-        size="large"
+      <Button
+        variant="ghost"
+        size="icon"
+        class="rounded-full"
         @click="isInputVisible = true"
-        >
-        <plus-outlined style="color: gray"/>
-      </a-button>
-    </div style="text-align: center;">
+      >
+        <Plus />
+      </Button>
+    </div>
   </template>
 </template>

@@ -1,6 +1,15 @@
 <script setup>
 import { ref } from 'vue';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { Pencil, Trash } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 const emit = defineEmits(['updateSuccess'])
 
@@ -10,13 +19,12 @@ const props = defineProps({
   listItems: Array,
 })
 
-const isModalOpen = ref(false)
+const isDialogOpen = ref(false)
 
 const titleEdit = ref('')
 const listItemsEdit = ref([])
 
 const openModal = () => {
-  isModalOpen.value = true
   titleEdit.value = props.listTitle
   listItemsEdit.value = props.listItems
 }
@@ -27,16 +35,24 @@ const tempDeleteItem = (item) => {
 
 // TODO add confirmation
 const submitEdit = async () => {
-  const gameIdsToDelete = props.listItems
+  const gameToDelete = props.listItems
     .filter((item) => listItemsEdit.value.every((i) => i.gameId !== item.gameId))
-    .map((item) => item.gameId)
 
-  await $fetch(`/api/list-items/by-list/${props.listId}`, {
-    method: 'DELETE',
-    body: {
-      gameIds: gameIdsToDelete
+  if (gameToDelete.length) {
+    const message = `Delete ${gameToDelete.map(i => i.gameTitle).join(', ')}?`
+    const confirmed = confirm(message) // FIXME
+
+    if (confirmed) {
+      await $fetch(`/api/list-items/by-list/${props.listId}`, {
+        method: 'DELETE',
+        body: {
+          gameIds: gameToDelete.map(i => i.gameId)
+        }
+      })
+    } else {
+      return
     }
-  })
+  }
 
   await $fetch(`/api/lists/${props.listId}`, {
     method: 'PUT',
@@ -45,65 +61,62 @@ const submitEdit = async () => {
     }
   })
 
-  isModalOpen.value = false
+  isDialogOpen.value = false
   emit('updateSuccess')
 }
 </script>
 
 <template>
-  <a-button
-    type="text"
-    shape="circle"
-    @click="openModal"
-  >
-    <template #icon>
-      <edit-outlined style="color: gray"/>
-    </template>
-  </a-button>
-
-  <a-modal
-    title="Edit"
-    :open="isModalOpen"
-    @cancel="isModalOpen = false"
-    @ok="submitEdit" 
-  >
-    <a-form
-      :label-col="{ span: 24 }"
-      :wrapper-col="{ span: 24 }"
-      style="padding: 1rem 0"  
-    >
-      <a-form-item label="Title">
-        <a-input v-model:value="titleEdit"/>
-      </a-form-item>
-      <a-list
-        :data-source="listItemsEdit"
+  <Dialog v-model:open="isDialogOpen">
+    <DialogTrigger>
+      <Button
+        size="icon"
+        variant="ghost"
+        class="rounded-full"
+        @click="openModal"
       >
-        <template #renderItem="{ item }">
-          <a-list-item
-            style="padding: 12px 10px;"
-          >
-            {{ item.gameTitle }}
+        <Pencil class="text-zinc-500"/>
+      </Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader class="mb-4">
+        <DialogTitle>Edit</DialogTitle>
+      </DialogHeader>
 
-            <template #actions>
-              <a-space>
-                <a-popconfirm
-                  title="Delete?"
-                  ok-text="Yes"
-                  cancel-text="No"
-                  size="large"
-                  @confirm="tempDeleteItem(item)"
-                >
-                  <a-button type="text" shape="circle">
-                    <template #icon>
-                      <delete-outlined style="color: salmon" />
-                    </template>
-                  </a-button>
-                </a-popconfirm>
-              </a-space>
-            </template>
-          </a-list-item>
+      <div class="flex items-center gap-4">
+        <Label class="block mb-2">Title:</Label>
+        <Input v-model="titleEdit" />
+      </div>
+
+      <ul>
+        <template v-for="item in listItemsEdit" :key="item.gameId">
+          <li class="flex justify-between items-center border-b py-3">
+            <div>{{ item.gameTitle }}</div>
+            <Button
+              size="icon"
+              variant="ghost"
+              class="rounded-full"
+              @click="tempDeleteItem(item)"
+            >
+              <Trash />
+            </Button>
+          </li>
         </template>
-      </a-list>
-    </a-form>
-  </a-modal>
+      </ul>
+
+      <DialogFooter>
+        <Button
+          variant="outline"
+          @click="isDialogOpen = false"
+        >
+          Cancel
+        </Button>
+        <Button
+          @click="submitEdit"
+        >
+          Save
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>

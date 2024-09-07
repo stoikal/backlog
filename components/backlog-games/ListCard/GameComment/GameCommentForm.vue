@@ -1,4 +1,7 @@
 <script setup>
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+
 const props = defineProps({
   gameId: String,
 })
@@ -27,21 +30,15 @@ const save = async () => {
 </script>
 
 <template>
-  <div style="padding: 1rem 0;">
-    <a-textarea
-      v-model:value="comment"
-      :rows="12"
+  <form @submit.prevent="save" class="space-y-6 text-end">
+    <Textarea
+      v-model="comment"
     />
-  </div> 
-
-  <a-row justify="end">
-    <a-col>
-      <a-button
-        type="primary"
-        @click="save"
-      >
-        Save
-      </a-button>
-    </a-col>
-  </a-row>
+  
+    <Button
+      type="submit"
+    >
+      Save
+    </Button>
+  </form>
 </template>

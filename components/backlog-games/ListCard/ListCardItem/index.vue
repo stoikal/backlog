@@ -1,6 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import ListCardItemForm from "./ListCardItemForm.vue";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
 const props = defineProps({
   gameId: Number,
@@ -10,34 +17,32 @@ const props = defineProps({
 
 const emit = defineEmits(['success'])
 
-const isModalOpen = ref(false)
-
-const handleClick = () => {
-  isModalOpen.value = true;
-}
+const isDialogOpen = ref(false)
 
 const handleSuccess = () => {
-  isModalOpen.value = false;
+  isDialogOpen.value = false;
   emit('success');
 }
 </script>
 
 <template>
-  <span role="button" @click="handleClick">
-    <s v-if="props.isFinished">{{ props.gameTitle }}</s>
-    <span v-else>{{ props.gameTitle }}</span>
-  </span>
+  <Dialog v-model:open="isDialogOpen">
+    <DialogTrigger>
+      <span role="button">
+        <s v-if="props.isFinished">{{ props.gameTitle }}</s>
+        <span v-else>{{ props.gameTitle }}</span>
+      </span>
+    </DialogTrigger>
 
-  <a-modal
-    title="Edit Game"
-    :open="isModalOpen"
-    destroy-on-close
-    :footer="false"
-    @cancel="isModalOpen = false"
-  >
-    <ListCardItemForm
-      :gameId="props.gameId"
-      @success="handleSuccess"
-    />
-  </a-modal>
+    <DialogContent>
+      <DialogHeader class="mb-4">
+        <DialogTitle>Edit Game</DialogTitle>
+      </DialogHeader>
+
+      <ListCardItemForm
+        :gameId="props.gameId"
+        @success="handleSuccess"
+      />
+    </DialogContent>
+  </Dialog>
 </template>

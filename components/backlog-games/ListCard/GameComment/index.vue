@@ -1,4 +1,13 @@
 <script setup>
+import { MessageCircle } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import GameCommentForm from './GameCommentForm.vue';
 
 const props = defineProps({
@@ -6,30 +15,30 @@ const props = defineProps({
   gameTitle: String,
 })
 
-const isModalOpen = ref(false);
+const isDialogOpen = ref(false);
 </script>
 
 <template>
-  <a-button
-    type="text"
-    shape="circle"
-    @click="isModalOpen = true"
-  >
-    <template #icon>
-      <message-outlined style="color: gray"/>
-    </template>
-  </a-button>
+  <Dialog v-model:open="isDialogOpen">
+    <DialogTrigger>
+      <Button
+        variant="ghost"
+        size="icon"
+        class="rounded-full"
+      >
+        <MessageCircle class="text-zinc-500"/>
+      </Button>
 
-  <a-modal
-    :open="isModalOpen"
-    :title="props.gameTitle"
-    destroy-on-close
-    :footer="false"
-    @cancel="isModalOpen = false"
-  >
-    <GameCommentForm
-      :gameId="props.gameId"
-      @success="isModalOpen = false"
-    />
-  </a-modal>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader class="mb-4">
+        <DialogTitle>{{ props.gameTitle }}</DialogTitle>
+      </DialogHeader>
+
+      <GameCommentForm
+        :gameId="props.gameId"
+        @success="isDialogOpen = false"
+      />
+    </DialogContent>
+  </Dialog>
 </template>
