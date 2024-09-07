@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import AddList from '~/components/backlog-games/AddList.vue';
+import AddGame from '~/components/backlog-games/AddGame/index.vue';
 import FloatButtonGroup from '~/components/common/FloatButtonGroup.vue';
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
 import ListCard from '~/components/home/ListCard/index.vue';
 import FilteredLists from '~/components/home/FilteredLists.vue';
-import AddGameButton from '~/components/home/AddGameButton/index.vue';
 
 definePageMeta({ middleware: 'auth' })
 
@@ -16,7 +16,7 @@ const loadLists = async () => {
   rawLists.value = res.data
 }
 
-// loadLists()
+loadLists()
 
 // group list-cards into columns
 const customReducer = (columns, item, itemIndex, columnCount) => {
@@ -66,17 +66,12 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
     </FilteredLists>
   </div>
 
-  <a-float-button-group
-  :open="false"
-  shape="circle" :style="{ right: '24px' }"
-  >
-    <AddGameButton
+  <FloatButtonGroup>
+    <AddGame
       @success="loadLists"
       @list-success="loadLists"
     />
-  </a-float-button-group>
 
-  <FloatButtonGroup>
     <AddList
       @success="loadLists"
     />

@@ -3,7 +3,6 @@ import { FileText } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,

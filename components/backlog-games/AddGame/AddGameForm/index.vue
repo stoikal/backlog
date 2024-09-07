@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
-import GameSelect from '~/components/common/GameSelect.vue';
-import PlatformSelect from '~/components/common/PlatformSelect.vue';
+import { Button } from '@/components/ui/button'
+import GameSelect from '@/components/common/GameSelect.vue';
+import PlatformSelect from '@/components/common/PlatformSelect.vue';
 import AddListForm from './AddListForm.vue';
+import CheckboxGroup from '@/components/common/CheckboxGroup.vue';
 
 const emit = defineEmits(['success', 'listSuccess', 'close'])
 
@@ -121,66 +122,59 @@ const selectedPlatform = ref(null)
 </script>
 
 <template>
-  <a-row gutter="16" style="margin-bottom: 1rem;">
-    <a-col span="18">
-      <GameSelect
-        v-model:value="selectedGame"
-        :platform="selectedPlatform"
-        size="large"
-        style="width: 100%"
-      />
-
-      <div style="padding: .5rem .8rem;">
-        <div>
-          {{ getGenres(selectedGame?.option.data) }}
-        </div>
-        <div>
-          {{ getPlatforms(selectedGame?.option.data) }}
-        </div>
-        <div>
-          {{ getReleaseDate(selectedGame?.option.data) }}
+  <div class="flex gap-4 mb-4">
+    <div class="w-3/4">
+      <div class="mb-6">
+        <GameSelect
+          v-model="selectedGame"
+          :platform="selectedPlatform"
+          size="large"
+          style="width: 100%"
+        />
+  
+        <div style="padding: .5rem .8rem;">
+          <div>
+            {{ getGenres(selectedGame?.option.data) }}
+          </div>
+          <div>
+            {{ getPlatforms(selectedGame?.option.data) }}
+          </div>
+          <div>
+            {{ getReleaseDate(selectedGame?.option.data) }}
+          </div>
         </div>
       </div>
-    </a-col>
-    <a-col span="6">
+
+      <CheckboxGroup
+        v-model="selectedLists"
+        :options="checkboxOptions"
+        class="mb-4"
+      />
+
+      <AddListForm
+        @success="handleListSuccess"
+      />
+    </div>
+    <div class="w-1/4">
       <PlatformSelect
         v-model:value="selectedPlatform"
         size="large"
         style="width: 100%"
       />
-    </a-col>
-  </a-row>
-
-  <a-row gutter="16">
-    <a-col span="18">
-      <a-checkbox-group
-        v-model:value="selectedLists"
-        :options="checkboxOptions"
-      />
-    </a-col>
-  </a-row>
-
-  <div style="margin-bottom: 1rem;">
-    <AddListForm
-      @success="handleListSuccess"
-    />
+    </div>
   </div>
 
-  <a-row justify="end" gutter="12">
-    <a-col>
-      <a-button
-        @click="save"
-      >
-        Save
-      </a-button>
-    </a-col>
-    <a-col>
-      <a-button
-        type="primary"
-        @click="saveAndClose"
-      >
-        Save and Close
-      </a-button>
-    </a-col>
-  </a-row>
+  <div class="text-end space-x-3">
+    <Button
+      variant="outline"
+      @click="save"
+    >
+      Save
+    </Button>
+    <Button
+      @click="saveAndClose"
+    >
+      Save and Close
+    </Button>
+  </div>
 </template>
