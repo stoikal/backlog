@@ -4,7 +4,7 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const gameId = getRouterParam(event, 'gameId')
 
-  const { data: rawData, error } = await client
+  const { data: rawData } = await client
     .schema('games_backlog')
     .from('games')
     .select(`
@@ -44,6 +44,5 @@ export default eventHandler(async (event) => {
     }))
   }
 
-
-  return { data, error }
+  return { data }
 })

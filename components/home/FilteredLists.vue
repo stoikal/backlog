@@ -1,19 +1,33 @@
 <script setup>
 import { useDebounceFn } from '@vueuse/core'
+import Input from '@/components/ui/input/Input.vue';
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const props = defineProps({
   lists: Array,
 })
 
 const gameTitleFilter = ref('')
+const search = ref('')
 
-const debouncedChangeGameTitleFilter = useDebounceFn((e) => {
-  gameTitleFilter.value = e.target.value
+const debouncedChangeSearchKey = useDebounceFn((value) => {
+  search.value = value
 }, 600)
 
+watch(gameTitleFilter, (value) => {
+  debouncedChangeSearchKey(value)
+})
+
 const filteredLists = computed(() => {
-  const searchKey = gameTitleFilter.value.toLowerCase()
-  const isFilterEmpty = gameTitleFilter.value.length === 0
+  const searchKey = search.value.toLowerCase()
+  const isFilterEmpty = search.value.length === 0
 
   return props.lists
     .map((list) => ({
@@ -60,7 +74,7 @@ const sortByCreatedDate = (a, b) => {
 }
 
 const comparators = {
-  alphabet: sortAlphabetically,
+  alphabetical: sortAlphabetically,
   finished: sortByFinishedCount,
   created: sortByCreatedDate,
 }
@@ -74,33 +88,36 @@ const sortedLists = computed(() => {
 </script>
 
 <template>
-  <a-row
-    justify="space-between"
-    style="margin-bottom: 2rem;"
-  >
-    <a-col>
-      <a-input
-        :value="gameTitleFilter"
-        placeholder="Game title"
-        @change="debouncedChangeGameTitleFilter"
+  <div class="flex justify-between mb-8">
+    <div class="flex-initial">
+      <Input
+        v-model="gameTitleFilter"
+        placeholder="game title"
       />
-    </a-col>
-    <a-col>
-      <a-space>
-        <label>sort by:</label>
-        <a-select
-          v-model:value="sortBy"
-          placeholder="sort"
-          style="min-width: 160px"
-          :options="[
-            { value: 'finished', label: 'finished count' },
-            { value: 'created', label: 'created date' },
-            { value: 'alphabet', label: 'alphabetical order' },
-          ]"
-        />
-      </a-space>
-    </a-col>
-  </a-row>
+    </div>
+    <div class="flex items-center">
+      <Label for="sort-select" class="mr-2 whitespace-nowrap">sort by:</Label>
+      <Select
+        v-model="sortBy"
+        id="sort-select"
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="finished">
+            finished count
+          </SelectItem>
+          <SelectItem value="created">
+            created date
+          </SelectItem>
+          <SelectItem value="alphabetical">
+            alphabetical order
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
 
   <slot :lists="sortedLists"></slot>
 </template>

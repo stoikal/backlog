@@ -77,15 +77,17 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   
   const [
-    resGameStatues,
+    resGameStatuses,
     resLists,
   ] = await Promise.all([
     getCombinedGameStatuses(client),
     getLists(client)
   ])
 
+  const gameStatuses = resGameStatuses.data
+  const lists = resLists.data
+
   return {
-    data: resGameStatues.data.concat(resLists.data),
-    error: resGameStatues.error
+    data: [...gameStatuses, ...lists]
   }
 })

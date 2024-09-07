@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import FloatButtonGroup from '~/components/common/FloatButtonGroup.vue';
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
-import ListCard from '~/components/home/ListCard/index.vue';
+import AddList from '~/components/backlog-games/AddList.vue';
+import AddGame from '~/components/backlog-games/AddGame/index.vue';
+import ListCard from '~/components/backlog-games/ListCard/index.vue';
 import FilteredLists from '~/components/home/FilteredLists.vue';
-import AddGameButton from '~/components/home/AddGameButton/index.vue';
-import AddListButton from '~/components/home/AddListButton/index.vue'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -48,9 +49,8 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
           :items="lists"
           :customReducer="customReducer"
         >
-          <template #renderItem="{ item }">
+          <template #renderItem="{ item }" :key="item.listId">
             <ListCard
-              :key="item.listId"
               :listId="item.listId"
               :title="item.title"
               :items="item.items"
@@ -65,17 +65,14 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
     </FilteredLists>
   </div>
 
-  <a-float-button-group
-  :open="false"
-  shape="circle" :style="{ right: '24px' }"
-  >
-    <AddGameButton
+  <FloatButtonGroup>
+    <AddGame
       @success="loadLists"
       @list-success="loadLists"
     />
 
-    <AddListButton
+    <AddList
       @success="loadLists"
     />
-  </a-float-button-group>
+  </FloatButtonGroup>
 </template>
