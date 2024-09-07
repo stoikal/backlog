@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import AddGameForm from './AddGameForm/index.vue'
 
 const emit = defineEmits(['success', 'listSuccess'])
@@ -22,12 +23,12 @@ const isDialogOpen = ref(false)
     class="w-[320rem]"
   >
     <DialogTrigger>
-      <button
-        type="button"
-        class="p-3 rounded-full bg-white hover:bg-zinc-50 drop-shadow-md"
+      <Button
+        size="icon"
+        class="rounded-full drop-shadow-md"
       >
         <Plus />
-      </button>
+      </Button>
     </DialogTrigger>
     <DialogContent class="w-[60rem] max-w-none">
       <DialogHeader>

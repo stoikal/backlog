@@ -7,6 +7,9 @@ useHead({
   meta: [
     { name: 'description', content: 'Personal Site' }
   ],
+  bodyAttrs: {
+    class: 'dark',
+  },
 })
 
 const supabase = useSupabaseClient()
