@@ -4,7 +4,7 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const game = await readBody(event)
 
-  const resGame = await client
+  await client
     .schema('games_backlog')
     .from('games')
     .upsert([{
@@ -14,8 +14,6 @@ export default eventHandler(async (event) => {
     }])
     .select()
 
-  let resGameGenres, resGamePlatforms;
-
   if (game.genres?.length) {
     const genres = game.genres
       .map((genre) => ({
@@ -24,7 +22,7 @@ export default eventHandler(async (event) => {
       }))
 
 
-    resGameGenres = await client
+    await client
       .schema('games_backlog')
       .from('games_genres')
       .upsert(genres)
@@ -39,12 +37,12 @@ export default eventHandler(async (event) => {
       }))
 
 
-    resGamePlatforms = await client
+    await client
       .schema('games_backlog')
       .from('games_platforms')
       .upsert(platforms)
       .select()
   } 
 
-  return { data: null, game, resGame, resGameGenres, resGamePlatforms }
+  return { data: null }
 })

@@ -1,7 +1,8 @@
 <script setup>
 import EditListButton from './EditListButton.vue';
 import AddListItemForm from './AddListItemForm.vue';
-import ListCardItem from './ListCardItem/index.vue'
+import ListCardItem from './ListCardItem/index.vue';
+import GameComment from "./GameComment/index.vue";
 
 const props = defineProps({
   listId: String,
@@ -85,7 +86,9 @@ const sortedItems = computed(() => {
       :data-source="sortedItems"
     >
       <template #renderItem="{ item }">
-        <a-list-item :key="item.gameId">
+        <a-list-item
+          :key="item.gameId"
+        >
           <a-space>
             <a-checkbox
               :checked="item.isFinished"
@@ -98,6 +101,13 @@ const sortedItems = computed(() => {
               @success="emit('updateSuccess')"
             />
           </a-space>
+
+          <template #actions>
+            <GameComment
+              :gameId="item.gameId"
+              :gameTitle="item.gameTitle"
+            />
+          </template>
         </a-list-item>
       </template>
 
