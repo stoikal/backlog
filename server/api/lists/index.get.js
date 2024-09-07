@@ -84,7 +84,10 @@ export default eventHandler(async (event) => {
     getLists(client)
   ])
 
+  const gameStatuses = resGameStatuses.data
+  const lists = resLists.data
+
   return {
-    data: resGameStatuses.data.concat(resLists.data)
+    data: [...gameStatuses, ...lists]
   }
 })
