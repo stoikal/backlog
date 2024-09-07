@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import AddList from '~/components/backlog-games/AddList.vue';
-import AddGame from '~/components/backlog-games/AddGame/index.vue';
 import FloatButtonGroup from '~/components/common/FloatButtonGroup.vue';
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
-import ListCard from '~/components/home/ListCard/index.vue';
+import AddList from '~/components/backlog-games/AddList.vue';
+import AddGame from '~/components/backlog-games/AddGame/index.vue';
+import ListCard from '~/components/backlog-games/ListCard/index.vue';
 import FilteredLists from '~/components/home/FilteredLists.vue';
 
 definePageMeta({ middleware: 'auth' })
