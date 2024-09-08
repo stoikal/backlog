@@ -4,8 +4,7 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const body = await readBody(event)
 
-  const session = await client.auth.getSession();
-  const { user } = session.data.session || {}
+  const { data: { user } } = await client.auth.getUser()
 
   const { data } = await client
     .schema('games_backlog')
