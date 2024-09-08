@@ -130,6 +130,7 @@ const isDeleteConfirmOpen = ref(false)
             <GameComment
               :gameId="item.gameId"
               :gameTitle="item.gameTitle"
+              :isCommented="item.isCommented"
             />
           </div>
         </div>

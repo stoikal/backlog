@@ -18,7 +18,7 @@ const save = async () => {
   const gameId = selectedGame.value.value
 
   if (gameId) {
-    const game = selectedGame.value.option.data
+    const game = selectedGame.value.data
 
     await $fetch('/api/games', {
       method: 'POST',
@@ -45,11 +45,13 @@ const save = async () => {
 <template>
   <template v-if="isInputVisible">
     <div class="w-full">
-      <GameSelect
-        size="large"
-        v-model:value="selectedGame"
-        style="width: 100%; margin-bottom: 1rem;"
-      />
+      <div class="mb-4">
+        <GameSelect
+          size="large"
+          v-model="selectedGame"
+          style="width: 100%; margin-bottom: 1rem;"
+        />
+      </div>
       <div class="space-x-4 text-end">
         <Button variant="outline" @click="isInputVisible = false">cancel</Button>
         <Button @click="save">save</Button>

@@ -1,5 +1,5 @@
 <script setup>
-import { FileText } from 'lucide-vue-next'
+import { File } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ const save = async () => {
         size="icon"
         class="rounded-full drop-shadow-md"
       >
-        <FileText />
+        <File />
       </Button>
     </DialogTrigger>
     <DialogContent>

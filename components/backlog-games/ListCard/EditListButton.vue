@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const emit = defineEmits(['updateSuccess'])
 
@@ -88,21 +89,23 @@ const submitEdit = async () => {
         <Input v-model="titleEdit" />
       </div>
 
-      <ul>
-        <template v-for="item in listItemsEdit" :key="item.gameId">
-          <li class="flex justify-between items-center border-b py-3">
-            <div>{{ item.gameTitle }}</div>
-            <Button
-              size="icon"
-              variant="ghost"
-              class="rounded-full"
-              @click="tempDeleteItem(item)"
-            >
-              <Trash />
-            </Button>
-          </li>
-        </template>
-      </ul>
+      <ScrollArea class="h-[600px]" style="max-height: calc(100vh - 200px);">
+        <ul>
+          <template v-for="item in listItemsEdit" :key="item.gameId">
+            <li class="flex justify-between items-center border-b py-3">
+              <div>{{ item.gameTitle }}</div>
+              <Button
+                size="icon"
+                variant="ghost"
+                class="rounded-full"
+                @click="tempDeleteItem(item)"
+              >
+                <Trash />
+              </Button>
+            </li>
+          </template>
+        </ul>
+      </ScrollArea>
 
       <DialogFooter>
         <Button

@@ -22,24 +22,22 @@ const logoutAndRedirect = async () => {
 </script>
 
 <template> 
-  <a-config-provider>
-    <header>
-      <div class="text-end p-4 px-12">
-        <template v-if="user">
-          <Button
-            class="rounded-full"
-            size="icon"
-            @click="logoutAndRedirect"
-          >
-            <LogOut />
-          </Button>
-        </template>
-      </div>
-    </header>
-    <div>
-      <main>
-        <NuxtPage />
-      </main>
+  <header>
+    <div class="text-end p-4 px-12">
+      <template v-if="user">
+        <Button
+          class="rounded-full"
+          size="icon"
+          @click="logoutAndRedirect"
+        >
+          <LogOut />
+        </Button>
+      </template>
     </div>
-  </a-config-provider>
+  </header>
+  <div>
+    <main>
+      <NuxtPage />
+    </main>
+  </div>
 </template>

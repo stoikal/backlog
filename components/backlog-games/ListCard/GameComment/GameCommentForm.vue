@@ -3,7 +3,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 
 const props = defineProps({
-  gameId: String,
+  gameId: Number,
 })
 
 const emit = defineEmits('success')
@@ -33,6 +33,7 @@ const save = async () => {
   <form @submit.prevent="save" class="space-y-6 text-end">
     <Textarea
       v-model="comment"
+      rows="10"
     />
   
     <Button

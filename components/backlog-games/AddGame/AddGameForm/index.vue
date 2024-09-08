@@ -47,41 +47,47 @@ const handleListSuccess = () => {
   emit('listSuccess')
 }
 
+const listItemsToCreate = computed(() => {
+  const gameId = selectedGame.value?.value
+
+  return selectedLists.value
+    .filter((list) => !listsContainingSelectedGame.value.includes(list))
+    .map((listId) => ({
+      listId,
+      gameId,
+    }))
+})
+
+const listIdsToDelete = computed(() => {
+  return listsContainingSelectedGame.value
+    .filter((list) => !selectedLists.value.includes(list))
+})
+
 const save = async () => {
   const gameId = selectedGame.value?.value
   
   if (gameId) {
-    const game = selectedGame.value.option.data
+    const game = selectedGame.value.data
 
     await $fetch('/api/games', {
       method: 'POST',
       body: game
     })
-
-    const listItemsToCreate = selectedLists.value
-      .filter((list) => !listsContainingSelectedGame.value.includes(list))
-      .map((listId) => ({
-        listId,
-        gameId,
-      }))
-
-    const listIdsToDelete = listsContainingSelectedGame.value
-      .filter((list) => !selectedLists.value.includes(list))
     
-    if (listItemsToCreate.length) {
+    if (listItemsToCreate.value.length) {
       await $fetch('/api/list-items', {
         method: 'POST',
         body: {
-          listItems: listItemsToCreate
+          listItems: listItemsToCreate.value
         }
       })
     }
 
-    if (listIdsToDelete.length) {
+    if (listIdsToDelete.value.length) {
       await $fetch(`/api/list-items/by-game/${gameId}`, {
         method: 'DELETE',
         body: {
-          listIds: listIdsToDelete
+          listIds: listIdsToDelete.value
         }
       })
     }
@@ -119,28 +125,37 @@ const getReleaseDate = (game = {}) => {
 }
 
 const selectedPlatform = ref(null)
+
+const isSubmitDisabled = computed(() => {
+  const isChanged = listItemsToCreate.value.length > 0 || listIdsToDelete.value.length > 0
+  return (
+    selectedGame.value === null ||
+    !isChanged
+  )
+})
 </script>
 
 <template>
-  <div class="flex gap-4 mb-4">
+  <div class="flex gap-4 mb-4 pt-6">
     <div class="w-3/4">
       <div class="mb-6">
-        <GameSelect
-          v-model="selectedGame"
-          :platform="selectedPlatform"
-          size="large"
-          style="width: 100%"
-        />
+        <div class="mb-3">
+          <GameSelect
+            v-model="selectedGame"
+            :platform="selectedPlatform"
+            size="large"
+          />
+        </div>
   
-        <div style="padding: .5rem .8rem;">
+        <div class="space-y-1">
           <div>
-            {{ getGenres(selectedGame?.option.data) }}
+            {{ getGenres(selectedGame?.data) }}
           </div>
           <div>
-            {{ getPlatforms(selectedGame?.option.data) }}
+            {{ getPlatforms(selectedGame?.data) }}
           </div>
           <div>
-            {{ getReleaseDate(selectedGame?.option.data) }}
+            {{ getReleaseDate(selectedGame?.data) }}
           </div>
         </div>
       </div>
@@ -157,7 +172,7 @@ const selectedPlatform = ref(null)
     </div>
     <div class="w-1/4">
       <PlatformSelect
-        v-model:value="selectedPlatform"
+        v-model="selectedPlatform"
         size="large"
         style="width: 100%"
       />
@@ -167,11 +182,13 @@ const selectedPlatform = ref(null)
   <div class="text-end space-x-3">
     <Button
       variant="outline"
+      :disabled="isSubmitDisabled"
       @click="save"
     >
       Save
     </Button>
     <Button
+      :disabled="isSubmitDisabled"
       @click="saveAndClose"
     >
       Save and Close
