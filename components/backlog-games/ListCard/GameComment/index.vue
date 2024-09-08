@@ -1,5 +1,5 @@
 <script setup>
-import { MessageCircle } from 'lucide-vue-next'
+import { MessageCircle, MessageCircleMore } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -11,8 +11,9 @@ import {
 import GameCommentForm from './GameCommentForm.vue';
 
 const props = defineProps({
-  gameId: String,
+  gameId: Number,
   gameTitle: String,
+  isCommented: Boolean,
 })
 
 const isDialogOpen = ref(false);
@@ -25,8 +26,9 @@ const isDialogOpen = ref(false);
         variant="ghost"
         size="icon"
         class="rounded-full"
-      >
-        <MessageCircle class="text-zinc-500"/>
+      > 
+        <MessageCircleMore v-if="props.isCommented" class="text-zinc-500"/>
+        <MessageCircle v-else class="text-zinc-500" />
       </Button>
 
     </DialogTrigger>

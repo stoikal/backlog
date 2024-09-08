@@ -39,6 +39,9 @@ const getCombinedGameStatuses = async (client) => {
   }
 }
 
+// FIXME optimize
+// maybe only get the list id and title (exclude the items)
+// paginate?
 const getLists = async (client) => {
   const { data: rawData } = await client
     .schema('games_backlog')
@@ -53,6 +56,9 @@ const getLists = async (client) => {
           name,
           game_statuses (
             is_finished
+          ),
+          game_comments (
+            comment
           )
         )
       )
@@ -66,7 +72,8 @@ const getLists = async (client) => {
     items: list.list_items?.map((item) => ({
       gameId: item.game_id,
       gameTitle: item.name,
-      isFinished: item.game_statuses[0]?.is_finished
+      isFinished: item.game_statuses[0]?.is_finished,
+      isCommented: !!item.game_comments[0],
     }))
   }))
 
