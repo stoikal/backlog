@@ -20,6 +20,7 @@ const columnCount = computed(() => {
 })
 
 const listsColumns = computed(() => {
+  // example result: [[1, 4, 7], [2, 5], [3, 6]]
   const defaultReducer = (columns, item, itemIndex, columnCount) => {
     const columnIndex = itemIndex % columnCount
 
