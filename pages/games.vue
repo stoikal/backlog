@@ -43,7 +43,7 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
 </script>
 
 <template>
-  <div style="max-width: 1200px; margin: 0 auto;">
+  <div class="max-w-[1200px] mx-auto p-6">
     <FilteredLists :lists="rawLists">
       <template v-slot="{ lists }">
         <UnsplashlikeColumns
