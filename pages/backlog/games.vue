@@ -20,24 +20,25 @@ loadLists()
 
 // group list-cards into columns
 const customReducer = (columns, item, itemIndex, columnCount) => {
-  let cols = itemIndex === 0
+  const resultColumns = itemIndex === 0
     ? Array(columnCount).fill(null).map(() => [])
     : columns
 
-  let shortestIndex = 0
+  let shortestColumnIndex = 0
 
-  for (let i = 1; i < cols.length; i++) {
-    const prev = cols[shortestIndex].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
-    const curr = cols[i].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+  for (let i = 1; i < resultColumns.length; i++) {
+    const ITEM_PENALTY = 3 // to account for card header and footer heights
+    const prev = resultColumns[shortestColumnIndex].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
+    const curr = resultColumns[i].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
 
     if (curr < prev) {
-      shortestIndex = i
+      shortestColumnIndex = i
     }
   }
 
-  cols[shortestIndex].push(item)
+  resultColumns[shortestColumnIndex].push(item)
 
-  return cols
+  return resultColumns
 }
 </script>
 

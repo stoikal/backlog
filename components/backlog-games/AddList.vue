@@ -34,7 +34,7 @@ const save = async () => {
 
 <template>
   <Dialog v-model:open="isDialogOpen">
-    <DialogTrigger>
+    <DialogTrigger as-child>
       <Button
         size="icon"
         class="rounded-full drop-shadow-md"

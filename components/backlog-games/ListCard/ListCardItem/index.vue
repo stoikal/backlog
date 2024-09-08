@@ -27,7 +27,7 @@ const handleSuccess = () => {
 
 <template>
   <Dialog v-model:open="isDialogOpen">
-    <DialogTrigger>
+    <DialogTrigger as-child>
       <span role="button">
         <s v-if="props.isFinished">{{ props.gameTitle }}</s>
         <span v-else>{{ props.gameTitle }}</span>

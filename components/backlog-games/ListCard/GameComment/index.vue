@@ -20,7 +20,7 @@ const isDialogOpen = ref(false);
 
 <template>
   <Dialog v-model:open="isDialogOpen">
-    <DialogTrigger>
+    <DialogTrigger as-child>
       <Button
         variant="ghost"
         size="icon"
