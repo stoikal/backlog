@@ -24,7 +24,7 @@ const getCombinedGameStatuses = async (client) => {
     .map(([key, items]) => ({
       listId: key,
       title: key,
-      createdAt: new Date().toISOString(),
+      createdAt: null,
       pseudo: true,
       items: items.map((item) => ({
         gameId: item.game_id,

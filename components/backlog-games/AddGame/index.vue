@@ -22,7 +22,7 @@ const isDialogOpen = ref(false)
     v-model:open="isDialogOpen"
     class="w-[320rem]"
   >
-    <DialogTrigger>
+    <DialogTrigger as-child>
       <Button
         size="icon"
         class="rounded-full drop-shadow-md"

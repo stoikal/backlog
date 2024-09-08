@@ -30,6 +30,7 @@ const emit = defineEmits(['deleteSuccess', 'updateSuccess', 'createItemSuccess']
 const handleDeleteList = async () => {
   await $fetch(`/api/lists/${props.listId}`, { method: 'DELETE' })
 
+  isDeleteConfirmOpen.value = false
   emit('deleteSuccess')
 }
 
@@ -60,6 +61,10 @@ const sortedItems = computed(() => {
     })
 
   return sorted
+})
+
+const displayedItems = computed(() => {
+  return sortedItems.value
 })
 
 const isDeleteConfirmOpen = ref(false)
@@ -106,7 +111,7 @@ const isDeleteConfirmOpen = ref(false)
     </CardHeader>
 
     <CardContent>
-      <template v-for="item in sortedItems" :key="item.gameId">
+      <template v-for="item in displayedItems" :key="item.gameId">
         <div class="py-6 border-b items-center flex gap-x-2 justify-between">
           <div class="items-center flex gap-x-2">
             <Checkbox
