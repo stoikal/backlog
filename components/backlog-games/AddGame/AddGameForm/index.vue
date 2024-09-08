@@ -51,7 +51,7 @@ const save = async () => {
   const gameId = selectedGame.value?.value
   
   if (gameId) {
-    const game = selectedGame.value.option.data
+    const game = selectedGame.value.data
 
     await $fetch('/api/games', {
       method: 'POST',
@@ -125,22 +125,23 @@ const selectedPlatform = ref(null)
   <div class="flex gap-4 mb-4">
     <div class="w-3/4">
       <div class="mb-6">
-        <GameSelect
-          v-model="selectedGame"
-          :platform="selectedPlatform"
-          size="large"
-          style="width: 100%"
-        />
+        <div class="mb-3">
+          <GameSelect
+            v-model="selectedGame"
+            :platform="selectedPlatform"
+            size="large"
+          />
+        </div>
   
-        <div style="padding: .5rem .8rem;">
+        <div class="space-y-1">
           <div>
-            {{ getGenres(selectedGame?.option.data) }}
+            {{ getGenres(selectedGame?.data) }}
           </div>
           <div>
-            {{ getPlatforms(selectedGame?.option.data) }}
+            {{ getPlatforms(selectedGame?.data) }}
           </div>
           <div>
-            {{ getReleaseDate(selectedGame?.option.data) }}
+            {{ getReleaseDate(selectedGame?.data) }}
           </div>
         </div>
       </div>
