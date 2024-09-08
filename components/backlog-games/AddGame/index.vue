@@ -18,7 +18,6 @@ const isDialogOpen = ref(false)
 <template>
   <Dialog
     v-model:open="isDialogOpen"
-    class="w-[320rem]"
   >
     <DialogTrigger as-child>
       <Button
@@ -34,7 +33,7 @@ const isDialogOpen = ref(false)
       </DialogHeader>
 
       <AddGameForm
-        @close="isModalOpen = false"
+        @close="isDialogOpen = false"
         @success="emit('success')"
         @list-success="emit('listSuccess')"
       />
