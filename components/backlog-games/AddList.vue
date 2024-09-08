@@ -3,7 +3,6 @@ import { File } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -47,19 +46,21 @@ const save = async () => {
         <DialogTitle>Add List</DialogTitle>
       </DialogHeader>
 
-      <div class="mb-4">
-        <Label class="block mb-2">Title</Label>
-        <Input v-model="listTitle" />
-      </div>
-
-      <DialogFooter>
-        <Button
-          :disabled="!listTitle.length"
-          @click="save"
-        >
-          Save
-        </Button>
-      </DialogFooter>
+      <form class="pt-6" @submit.prevent="save">
+        <div class="mb-6">
+          <Label class="block mb-4">Title</Label>
+          <Input v-model="listTitle" />
+        </div>
+        
+        <div class="text-end">
+          <Button
+            :disabled="!listTitle.length"
+            type="submit"
+          >
+            Save
+          </Button>
+        </div>
+      </form>
     </DialogContent>
   </Dialog>
 </template>
