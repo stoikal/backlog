@@ -1,8 +1,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core'
-import { Check, ChevronsUpDown } from 'lucide-vue-next'
-import { cn } from '@/lib/utils'
+import { ChevronsUpDown } from 'lucide-vue-next'
 import {
   Command,
   CommandEmpty,
@@ -105,7 +104,10 @@ const open = ref(false)
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[670px] p-0">
-      <Command @update:searchTerm="debouncedFetchGames"> 
+      <Command
+        :filterFunction="(list) => list"
+        @update:searchTerm="debouncedFetchGames"
+      > 
         <CommandInput
           class="h-9"
           placeholder="Search game..."
