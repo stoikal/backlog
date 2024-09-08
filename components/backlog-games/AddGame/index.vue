@@ -1,5 +1,5 @@
 <script setup>
-import { Plus } from 'lucide-vue-next'
+import { Gamepad2 } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ const isDialogOpen = ref(false)
         size="icon"
         class="rounded-full drop-shadow-md"
       >
-        <Plus />
+        <Gamepad2 />
       </Button>
     </DialogTrigger>
     <DialogContent class="w-[60rem] max-w-none">
