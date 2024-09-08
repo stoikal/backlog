@@ -3,9 +3,9 @@ import { LogOut } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 
 useHead({
-  title: 'Personal Site',
+  title: 'Backlog',
   meta: [
-    { name: 'description', content: 'Personal Site' }
+    { name: 'description', content: 'Backlog' }
   ],
   bodyAttrs: {
     class: 'dark',

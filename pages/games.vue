@@ -5,7 +5,7 @@ import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
 import AddList from '~/components/backlog-games/AddList.vue';
 import AddGame from '~/components/backlog-games/AddGame/index.vue';
 import ListCard from '~/components/backlog-games/ListCard/index.vue';
-import FilteredLists from '~/components/home/FilteredLists.vue';
+import FilteredLists from '~/components/backlog-games/FilteredLists.vue';
 
 definePageMeta({ middleware: 'auth' })
 

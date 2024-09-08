@@ -9,7 +9,10 @@ const getLists = async (client) => {
       title,
       created_at,
       list_items (
-        *
+        work_key,
+        ...ref_works (
+          title
+        )
       )
     `)
 
@@ -18,7 +21,8 @@ const getLists = async (client) => {
     title: list.title,
     createdAt: list.created_at,
     items: list.list_items?.map((item) => ({
-      workKey: item.work_key
+      workKey: item.work_key,
+      workTitle: item.title
     }))
   }))
 
