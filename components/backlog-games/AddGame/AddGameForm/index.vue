@@ -157,7 +157,7 @@ const selectedPlatform = ref(null)
     </div>
     <div class="w-1/4">
       <PlatformSelect
-        v-model:value="selectedPlatform"
+        v-model="selectedPlatform"
         size="large"
         style="width: 100%"
       />

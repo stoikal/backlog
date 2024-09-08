@@ -13,8 +13,6 @@ import AddGameForm from './AddGameForm/index.vue'
 const emit = defineEmits(['success', 'listSuccess'])
 
 const isDialogOpen = ref(false)
-
-
 </script>
 
 <template>
