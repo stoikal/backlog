@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink to="/backlog/games">
+  <NuxtLink to="/games">
     games backlog
   </NuxtLink>
 </template>
