@@ -6,13 +6,13 @@ export default eventHandler(async (event) => {
 
   const { data: { user } } = await client.auth.getUser()
 
-  const { data } = await client
-    .schema('games_backlog')
+  const { data, error } = await client
+    .schema('reading_backlog')
     .from('lists')
     .insert([
       { user_id: user?.id, title: body.title },
     ])
     .select()      
 
-  return { data }
+  return { data,error }
 })

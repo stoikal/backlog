@@ -23,7 +23,7 @@ const handleSubmit = async () => {
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (!error) {
-    navigateTo({ path: '/backlog/games' })
+    navigateTo({ path: '/' })
   }
 }
 </script>

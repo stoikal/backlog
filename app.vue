@@ -22,7 +22,7 @@ const logoutAndRedirect = async () => {
 </script>
 
 <template> 
-  <header>
+  <header class="border-b">
     <div class="text-end p-4 px-12">
       <template v-if="user">
         <Button
