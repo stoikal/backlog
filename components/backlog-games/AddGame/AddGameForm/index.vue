@@ -47,6 +47,22 @@ const handleListSuccess = () => {
   emit('listSuccess')
 }
 
+const listItemsToCreate = computed(() => {
+  const gameId = selectedGame.value?.value
+
+  return selectedLists.value
+    .filter((list) => !listsContainingSelectedGame.value.includes(list))
+    .map((listId) => ({
+      listId,
+      gameId,
+    }))
+})
+
+const listIdsToDelete = computed(() => {
+  return listsContainingSelectedGame.value
+    .filter((list) => !selectedLists.value.includes(list))
+})
+
 const save = async () => {
   const gameId = selectedGame.value?.value
   
@@ -57,31 +73,21 @@ const save = async () => {
       method: 'POST',
       body: game
     })
-
-    const listItemsToCreate = selectedLists.value
-      .filter((list) => !listsContainingSelectedGame.value.includes(list))
-      .map((listId) => ({
-        listId,
-        gameId,
-      }))
-
-    const listIdsToDelete = listsContainingSelectedGame.value
-      .filter((list) => !selectedLists.value.includes(list))
     
-    if (listItemsToCreate.length) {
+    if (listItemsToCreate.value.length) {
       await $fetch('/api/list-items', {
         method: 'POST',
         body: {
-          listItems: listItemsToCreate
+          listItems: listItemsToCreate.value
         }
       })
     }
 
-    if (listIdsToDelete.length) {
+    if (listIdsToDelete.value.length) {
       await $fetch(`/api/list-items/by-game/${gameId}`, {
         method: 'DELETE',
         body: {
-          listIds: listIdsToDelete
+          listIds: listIdsToDelete.value
         }
       })
     }
@@ -119,10 +125,18 @@ const getReleaseDate = (game = {}) => {
 }
 
 const selectedPlatform = ref(null)
+
+const isSubmitDisabled = computed(() => {
+  const isChanged = listItemsToCreate.value.length > 0 || listIdsToDelete.value.length > 0
+  return (
+    selectedGame.value === null ||
+    !isChanged
+  )
+})
 </script>
 
 <template>
-  <div class="flex gap-4 mb-4">
+  <div class="flex gap-4 mb-4 pt-6">
     <div class="w-3/4">
       <div class="mb-6">
         <div class="mb-3">
@@ -168,11 +182,13 @@ const selectedPlatform = ref(null)
   <div class="text-end space-x-3">
     <Button
       variant="outline"
+      :disabled="isSubmitDisabled"
       @click="save"
     >
       Save
     </Button>
     <Button
+      :disabled="isSubmitDisabled"
       @click="saveAndClose"
     >
       Save and Close
