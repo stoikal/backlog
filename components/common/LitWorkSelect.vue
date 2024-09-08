@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core'
+import OpenLibrary from '@/client/openLibrary';
 import { ChevronsUpDown } from 'lucide-vue-next'
 import {
   Command,
@@ -21,57 +22,52 @@ import {
 
 let lastFetchId = 0;
 
-const props = defineProps({
-  size: String,
-  platform: Number,
-})
-
-const searchKey = ref('')
-
 const state = reactive({
   data: [],
   fetching: false,
 });
 
-const getReleaseYear = (game = {}) => {
-  if (!game.firstReleaseDate) return 'N/A'
-
-  return new Date(game.firstReleaseDate * 1000)
-    .getFullYear()
+const getFirstAuthorName = (work) => {
+  return work.author_name?.[0]
 }
 
-const fetchGames = (name) => {
+const getLabel = (work) => {
+  let label = work.title
+
+  const authorName = getFirstAuthorName(work)
+  const year = work.first_publish_year
+
+  if (authorName) label += ` - ${authorName}`
+  if (year) label += ` (${year})`
+
+  return label
+}
+
+const fetchWorks = (searchKey) => {
   lastFetchId += 1;
   const fetchId = lastFetchId;
   state.data = [];
   state.fetching = true;
-  searchKey.value = name
 
-  const params = {
-    search: name,
-  }
-
-  if (props.platform) params.platform = props.platform
-
-  $fetch('/api/games', { params })
+  OpenLibrary.search(searchKey)
     .then((res) => {
       if (fetchId !== lastFetchId) {
         // for fetch callback order
         return;
       }
 
-      const data = res.data.map((game) => ({
-        data: game,
-        label: `${game.name} (${getReleaseYear(game)})`,
-        value: game.id,
+      const data = res.docs.map((work) => ({
+        data: work,
+        label: getLabel(work),
+        value: work.key,
       }));
 
       state.data = data
       state.fetching = false
-    });
+    })
 };
 
-const debouncedFetchGames = useDebounceFn(fetchGames, 800)
+const debouncedFetchWorks = useDebounceFn(fetchWorks, 800)
 
 const model = defineModel()
 watch(() => model.value, () => {
@@ -79,12 +75,9 @@ watch(() => model.value, () => {
   state.fetching = false
 });
 
-watch(() => props.platform, () => {
-  debouncedFetchGames(searchKey.value)
-})
 
 const buttonLabel = computed(() => {
-  return model.value?.label || 'Select game'
+  return model.value?.label || 'Select work'
 })
 
 const open = ref(false)
@@ -103,23 +96,23 @@ const open = ref(false)
         <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-[670px] p-0">
+    <PopoverContent class="w-[590px] p-0">
       <Command
         :filterFunction="(list) => list"
-        @update:searchTerm="debouncedFetchGames"
+        @update:searchTerm="debouncedFetchWorks"
       > 
         <CommandInput
           class="h-9"
-          placeholder="Search game..."
+          placeholder="Search..."
         />
         <CommandEmpty v-if="state.fetching">loading...</CommandEmpty>
-        <CommandEmpty v-else>No game found.</CommandEmpty>
+        <CommandEmpty v-else>Nothing found.</CommandEmpty>
         <CommandList>
           <CommandGroup>
             <CommandItem
-              v-for="game in state.data"
-              :key="game.value"
-              :value="game.value"
+              v-for="option in state.data"
+              :key="option.value"
+              :value="option.value"
               @select="(ev) => {
                 const found = state.data.find((d) => d.value === ev.detail.value)
 
@@ -127,7 +120,7 @@ const open = ref(false)
                 open = false
               }"
             >
-              {{ game.label }}
+              {{ option.label }}
             </CommandItem>
           </CommandGroup>
         </CommandList>

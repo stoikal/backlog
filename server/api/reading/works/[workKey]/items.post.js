@@ -2,17 +2,20 @@ import { serverSupabaseClient } from '#supabase/server'
 
 export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
+  const workKey = decodeURIComponent(getRouterParam(event, 'workKey'))
   const body = await readBody(event)
-
-  const { data: { user } } = await client.auth.getUser()
+  const listIds = body.listIds
 
   const { data } = await client
     .schema('reading_backlog')
-    .from('lists')
-    .insert([
-      { user_id: user?.id, title: body.title },
-    ])
-    .select()      
+    .from('list_items')
+    .insert(
+      listIds.map((listId) => ({
+        list_id: listId,
+        work_key: workKey,
+      }))
+    )
+    .select()
 
   return { data }
 })

@@ -4,7 +4,7 @@ const openLibrary = {
 
     const params = new URLSearchParams({
       q: searchKey.trim().toLowerCase().replaceAll(' ', '+'),
-      fields: 'author_key,author_name,first_publish_year,language,title,key',
+      fields: 'author_key,author_name,first_publish_year,language,title,key,type,number_of_pages_median',
       limit: '20',
     })
 
