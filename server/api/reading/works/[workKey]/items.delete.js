@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
   const listIds = body.listIds
 
   const { data } = await client
-    .schema('games_backlog')
+    .schema('reading_backlog')
     .from('list_items')
     .delete()
     .eq('work_key', workKey)
