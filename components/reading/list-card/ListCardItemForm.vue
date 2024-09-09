@@ -40,6 +40,17 @@ const loadListsContainingWork = async () => {
 
 loadListsContainingWork()
 
+const listIdsToCreate = computed(() => {
+  return selectedListIds.value
+    .filter((id) => !listsContainingWork.value.some((list) => list.listId === id))
+})
+
+const listIdsToDelete = computed(() => {
+  return listsContainingWork.value
+    .filter((list) => !selectedListIds.value.includes(list.listId))
+    .map((list) => list.listId)
+})
+
 const checkboxOptions = computed(() => {
   return lists.value
     .map((list) => ({
@@ -49,7 +60,27 @@ const checkboxOptions = computed(() => {
 })
 
 const save = async () => {
+  const workKey = encodeURIComponent(props.workKey)
 
+  if (listIdsToCreate.value.length) {
+    await $fetch(`/api/reading/works/${workKey}/items`, {
+      method: 'POST',
+      body: {
+        listIds: listIdsToCreate.value
+      }
+    })
+  }
+
+  if (listIdsToDelete.value.length) {
+    await $fetch(`/api/reading/works/${workKey}/items`, {
+      method: 'DELETE',
+      body: {
+        listIds: listIdsToDelete.value
+      }
+    })
+  }
+
+  emit('success')
 }
 
 const getAuthors = (work) => {
@@ -63,6 +94,11 @@ const getLanguages = (work) => {
     ?.map((language) => language.name ?? language.key)
     .join(', ')
 }
+
+const isSubmitDisabled = computed(() => {
+  const isChanged = listIdsToCreate.value.length > 0 || listIdsToDelete.value.length > 0
+  return !isChanged
+})
 </script>
 
 <template>
@@ -94,6 +130,7 @@ const getLanguages = (work) => {
     <div class="text-end">
       <Button
         type="submit"
+        :disabled="isSubmitDisabled"
       >
         Save
       </Button>

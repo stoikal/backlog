@@ -6,12 +6,12 @@ export default eventHandler(async (event) => {
   const body = await readBody(event)
   const listIds = body.listIds
 
-  const { data } = await client
+  const { data, error } = await client
     .schema('reading_backlog')
     .from('list_items')
     .delete()
     .eq('work_key', workKey)
     .in('list_id', listIds)
 
-  return { data }
+  return { data, error, listIds, workKey, rawWOrkKey: getRouterParam(event, 'workKey')  }
 })

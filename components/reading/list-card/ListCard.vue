@@ -71,19 +71,26 @@ const listItemDialog = ref({
         </div>
       </template>
     </CardContent>
+
+    <Dialog
+      v-model:open="listItemDialog.open"
+    >
+      <DialogContent>
+        <DialogHeader class="mb-4">
+          <DialogTitle>Edit Item</DialogTitle>
+        </DialogHeader>
+
+        <ListCardItemForm
+          :workKey="listItemDialog.workKey"
+          @success="() => {
+            listItemDialog = {
+              open: false,
+              workKey: null,
+            }
+            emit('updateSuccess')
+          }"
+        />
+      </DialogContent>
+    </Dialog>
   </Card>
-
-  <Dialog
-    v-model:open="listItemDialog.open"
-  >
-    <DialogContent>
-      <DialogHeader class="mb-4">
-        <DialogTitle>Edit Item</DialogTitle>
-      </DialogHeader>
-
-      <ListCardItemForm
-        :workKey="listItemDialog.workKey"
-      />
-    </DialogContent>
-  </Dialog>
 </template>
