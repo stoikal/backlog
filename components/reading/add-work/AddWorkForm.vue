@@ -23,10 +23,31 @@ const checkboxOptions = computed(() => {
 })
 
 const selectedWork = ref(null)
-const selectedLists = ref([])
+const selectedListIds = ref([])
+const listsContainingWork = ref([])
+
+const loadListsContainingWork = async (work) => {
+  const workKey = encodeURIComponent(work.key)
+  const res = await $fetch(`/api/reading/lists/by-work/${workKey}`)
+  listsContainingWork.value = res.data
+  selectedListIds.value = res.data.map((list) => list.listId)
+}
+
+watch(selectedWork, (selectedWork) => {
+  if (selectedWork) {
+    loadListsContainingWork(selectedWork.data)
+  }
+})
 
 const listIdsToCreate = computed(() => {
-  return selectedLists.value
+  return selectedListIds.value
+    .filter((id) => !listsContainingWork.value.some((list) => list.listId === id))
+})
+
+const listIdsToDelete = computed(() => {
+  return listsContainingWork.value
+    .filter((list) => !selectedListIds.value.includes(list.listId))
+    .map((list) => list.listId)
 })
 
 const save = async () => {
@@ -62,10 +83,19 @@ const save = async () => {
       })
     }
 
+    if (listIdsToDelete.value.length) {
+      await $fetch(`/api/reading/works/${encodeURIComponent(workKey)}/items`, {
+        method: 'DELETE',
+        body: {
+          listIds: listIdsToDelete.value
+        }
+      })
+    }
+
     emit('success')
 
     selectedWork.value = null
-    selectedLists.value = []
+    selectedListIds.value = []
   }
 }
 
@@ -74,9 +104,8 @@ const saveAndClose = async () => {
   emit('close')
 }
 
-
 const isSubmitDisabled = computed(() => {
-  const isChanged = listIdsToCreate.value.length > 0
+  const isChanged = listIdsToCreate.value.length > 0 || listIdsToDelete.value.length > 0
   return (
     selectedWork.value === null ||
     !isChanged
@@ -93,7 +122,7 @@ const isSubmitDisabled = computed(() => {
     </div>
 
     <CheckboxGroup
-      v-model="selectedLists"
+      v-model="selectedListIds"
       :options="checkboxOptions"
     />
   </div>

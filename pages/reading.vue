@@ -26,6 +26,7 @@ loadLists()
           :title="item.title"
           :items="item.items"
           class="mb-6"
+          @update-success="loadLists"
         />
       </template>
     </UnsplashlikeColumns>

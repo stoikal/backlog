@@ -27,8 +27,8 @@ const isDialogOpen = ref(false);
         size="icon"
         class="rounded-full"
       > 
-        <MessageCircleMore v-if="props.isCommented" class="text-zinc-500"/>
-        <MessageCircle v-else class="text-zinc-500" />
+        <MessageCircleMore v-if="props.isCommented" class="text-zinc-500 w-5 h-5 "/>
+        <MessageCircle v-else class="text-zinc-500 w-5 h-5 " />
       </Button>
 
     </DialogTrigger>
