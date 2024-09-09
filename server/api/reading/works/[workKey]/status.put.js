@@ -4,14 +4,20 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const workKey = decodeURIComponent(getRouterParam(event, 'workKey'))
   const body = await readBody(event)
-  const listIds = body.listIds
+
+  const { data: { user } } = await client.auth.getUser()
 
   const { data } = await client
-    .schema('games_backlog')
-    .from('list_items')
-    .delete()
-    .eq('work_key', workKey)
-    .in('list_id', listIds)
+    .schema('reading_backlog')
+    .from('work_statuses')
+    .upsert([
+      {
+        user_id: user?.id,
+        work_key: workKey,
+        is_finished: body.isFinished,
+      },
+    ])
+    .select()
 
   return { data }
 })
