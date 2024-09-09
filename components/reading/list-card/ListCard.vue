@@ -44,21 +44,23 @@ const listItemDialog = ref({
 <template>
   <Card>
     <CardHeader class="border-b">
-      <CardTitle>
+      <CardTitle class="text-md">
         {{  props.title }}
       </CardTitle>
     </CardHeader>
 
     <CardContent>
       <template v-for="item in props.items" :key="item.workKey">
-        <div class="py-6 items-center flex gap-x-2 justify-between">
-          <div class="items-center flex gap-x-2">
+        <div class="py-3 items-center flex gap-x-2 justify-between">
+          <div class="items-top flex gap-x-2">
             <Checkbox
               :checked="item.isFinished"
+              class="h-3 w-3 mt-1.5"
               @update:checked="handleStatusCheckboxChange(item, $event)"
             />
             <p
               role="button"
+              class="text-sm"
               @click="listItemDialog = {
                 workKey: item.workKey,
                 open: true,
