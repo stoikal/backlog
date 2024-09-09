@@ -1,7 +1,5 @@
 const openLibrary = {
   async search (searchKey: string) {
-    const { public: { appName, appEmail, appVersion } } = useRuntimeConfig()
-
     const url = 'https://openlibrary.org/search.json?'
 
     const params = new URLSearchParams({
@@ -10,16 +8,9 @@ const openLibrary = {
       limit: '20',
     })
 
-    const headers = new Headers({
-      "User-Agent": `${appName}/${appVersion} (${appEmail})`
-    })
+    const response = await fetch(url + params.toString())
 
-    const response = await fetch(url + params.toString(), {
-      headers,
-    })
-
-    const json = await response.json()
-    return json
+    return await response.json()
   }
 }
 
