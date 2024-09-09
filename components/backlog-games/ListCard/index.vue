@@ -91,7 +91,7 @@ const isDeleteConfirmOpen = ref(false)
               size="icon"
               class="rounded-full"
             >
-              <Trash class="text-red-900"/>
+              <Trash class="text-red-900 w-5 h-5"/>
             </Button>
           </PopoverTrigger>
           <PopoverContent>

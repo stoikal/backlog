@@ -76,7 +76,7 @@ const submitEdit = async () => {
         class="rounded-full"
         @click="openModal"
       >
-        <Pencil class="text-zinc-500"/>
+        <Pencil class="text-zinc-500 w-5 h-5"/>
       </Button>
     </DialogTrigger>
     <DialogContent>
@@ -100,7 +100,7 @@ const submitEdit = async () => {
                 class="rounded-full"
                 @click="tempDeleteItem(item)"
               >
-                <Trash />
+                <Trash class="w-5 h-5 text-red-900"/>
               </Button>
             </li>
           </template>

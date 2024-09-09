@@ -22,7 +22,7 @@ const props = defineProps({
 
     <CardContent>
       <template v-for="item in props.items" :key="item.workKey">
-        <div class="py-6 border-b items-center flex gap-x-2 justify-between">
+        <div class="py-6 items-center flex gap-x-2 justify-between">
           <div class="items-center flex gap-x-2">
             {{ item.workTitle }}
           </div>
