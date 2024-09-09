@@ -6,5 +6,12 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt'
-  ]
+  ],
+  runtimeConfig: {
+    public: {
+      appName: '',
+      appVersion: '',
+      appEmail: ''
+    }
+  }
 })
