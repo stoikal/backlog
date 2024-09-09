@@ -11,7 +11,10 @@ const getLists = async (client) => {
       list_items (
         work_key,
         ...ref_works (
-          title
+          title,
+          work_statuses (
+            is_finished
+          )
         )
       )
     `)
@@ -22,7 +25,8 @@ const getLists = async (client) => {
     createdAt: list.created_at,
     items: list.list_items?.map((item) => ({
       workKey: item.work_key,
-      workTitle: item.title
+      workTitle: item.title,
+      isFinished: item.work_statuses?.[0]?.is_finished
     }))
   }))
 
