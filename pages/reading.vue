@@ -23,6 +23,27 @@ loadLists()
       <template v-slot="{ lists }">
         <UnsplashlikeColumns
           :items="lists"
+          :customReducer="(columns, item, itemIndex, columnCount) => {
+            const resultColumns = itemIndex === 0
+              ? Array(columnCount).fill(null).map(() => [])
+              : columns
+
+            let shortestColumnIndex = 0
+
+            for (let i = 1; i < resultColumns.length; i++) {
+              const ITEM_PENALTY = 3 // to account for card header and footer heights
+              const prev = resultColumns[shortestColumnIndex].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
+              const curr = resultColumns[i].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
+
+              if (curr < prev) {
+                shortestColumnIndex = i
+              }
+            }
+
+            resultColumns[shortestColumnIndex].push(item)
+
+            return resultColumns
+          }"
         >
           <template #renderItem="{ item }" :key="item.listId">
             <ListCard
