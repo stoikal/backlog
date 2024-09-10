@@ -5,12 +5,13 @@ import AddList from '@/components/reading/AddList.vue';
 import AddWork from '@/components/reading/add-work/AddWork.vue';
 import ListCard from '@/components/reading/list-card/ListCard.vue';
 import UnsplashlikeColumns from '@/components/common/UnsplashlikeColumns.vue';
+import FilteredLists from '~/components/reading/FilteredLists.vue';
 
-const lists = ref([])
+const rawLists = ref([])
 
 const loadLists = async () => {
   const res = await $fetch('/api/reading/lists')
-  lists.value = res.data
+  rawLists.value = res.data
 }
 
 loadLists()
@@ -18,18 +19,22 @@ loadLists()
 
 <template>
   <div class="max-w-[1200px] mx-auto p-6">
-    <UnsplashlikeColumns
-      :items="lists"
-    >
-      <template #renderItem="{ item }" :key="item.listId">
-        <ListCard
-          :title="item.title"
-          :items="item.items"
-          class="mb-6"
-          @update-success="loadLists"
-        />
+    <FilteredLists :lists="rawLists">
+      <template v-slot="{ lists }">
+        <UnsplashlikeColumns
+          :items="lists"
+        >
+          <template #renderItem="{ item }" :key="item.listId">
+            <ListCard
+              :title="item.title"
+              :items="item.items"
+              class="mb-6"
+              @update-success="loadLists"
+            />
+          </template>
+        </UnsplashlikeColumns>
       </template>
-    </UnsplashlikeColumns>
+    </FilteredLists>
   </div>
 
   <FloatButtonGroup>
