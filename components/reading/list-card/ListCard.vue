@@ -60,7 +60,7 @@ const sortedItems = computed(() => {
   <Card>
     <CardHeader class="border-b">
       <CardTitle class="text-md">
-        {{  props.title }}
+        {{ props.title }}
       </CardTitle>
     </CardHeader>
 
