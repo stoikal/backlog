@@ -11,6 +11,9 @@ export default eventHandler(async (event) => {
     .upsert([{
       key: work.key,
       title: work.title,
+      alternative_title: work.alternative_title,
+      subtitle: work.subtitle,
+      alternative_subtitle: work.alternative_subtitle,
       first_publish_year: work.firstPublishYear,
       type: work.type,
       number_of_pages_median: work.numberOfPagesMedian,
