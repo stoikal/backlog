@@ -110,9 +110,9 @@ const isDeleteConfirmOpen = ref(false)
       <!-- </div> -->
     </CardHeader>
 
-    <CardContent>
+    <CardContent class="px-0">
       <template v-for="item in displayedItems" :key="item.gameId">
-        <div class="py-6 border-b items-center flex gap-x-2 justify-between">
+        <div class="p-6 border-b items-center flex gap-x-2 justify-between hover:bg-zinc-900">
           <div class="items-center flex gap-x-2">
             <Checkbox
               :checked="item.isFinished"

@@ -39,26 +39,43 @@ const listItemDialog = ref({
   open: false,
   workKey: null
 })
+
+const sortedItems = computed(() => {
+  return props.items
+    .sort((a, b) => {
+      // finished items last
+      if (!a.isFinished && b.isFinished) return -1
+      if (a.isFinished && !b.isFinished) return 1
+
+      // if finished statuses are the same then sort alphabetically
+      if (a.workTitle < b.workTitle) return -1
+      if (a.workTitle > b.workTitle) return 1
+
+      return 0
+    })
+})
 </script>
 
 <template>
   <Card>
     <CardHeader class="border-b">
-      <CardTitle>
+      <CardTitle class="text-md">
         {{  props.title }}
       </CardTitle>
     </CardHeader>
 
     <CardContent>
-      <template v-for="item in props.items" :key="item.workKey">
-        <div class="py-6 items-center flex gap-x-2 justify-between">
-          <div class="items-center flex gap-x-2">
+      <template v-for="item in sortedItems" :key="item.workKey">
+        <div class="py-3 items-center flex gap-x-2 justify-between">
+          <div class="items-top flex gap-x-2">
             <Checkbox
               :checked="item.isFinished"
+              class="h-3 w-3 mt-1.5"
               @update:checked="handleStatusCheckboxChange(item, $event)"
             />
             <p
               role="button"
+              class="text-sm"
               @click="listItemDialog = {
                 workKey: item.workKey,
                 open: true,

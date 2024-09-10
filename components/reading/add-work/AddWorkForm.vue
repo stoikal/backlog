@@ -59,6 +59,9 @@ const save = async () => {
     const body = {
       key: rawData.key,
       title: rawData.title,
+      alternativeTitle: rawData.alternative_title,
+      subtitle: rawData.subtitle,
+      alternativeSubtitle: rawData.alternative_subtitle,
       firstPublishYear: rawData.first_publish_year,
       type: rawData.type,
       numberOfPagesMedian: rawData.number_of_pages_median,

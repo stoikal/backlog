@@ -34,9 +34,11 @@ const getFirstAuthorName = (work) => {
 const getLabel = (work) => {
   let label = work.title
 
+  const subtitle = work.subtitle
   const authorName = getFirstAuthorName(work)
   const year = work.first_publish_year
 
+  if (subtitle) label += `: ${subtitle}`
   if (authorName) label += ` - ${authorName}`
   if (year) label += ` (${year})`
 

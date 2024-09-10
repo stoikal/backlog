@@ -24,14 +24,14 @@ const handleCheckboxChange = (option, checked) => {
 <template>
   <div class="flex flex-wrap gap-y-2 gap-x-4">
     <template v-for="option in props.options" :key="option.value">
-      <span class="items-top flex space-x-2">
-
+      <label class="items-center flex gap-x-2 cursor-pointer">
         <Checkbox
           :checked="isChecked(option)"
           @update:checked="handleCheckboxChange(option, $event)"
         />
-        <label>{{  option.label }}</label>
-      </span>
+        <span>{{ option.label }}</span>
+        
+      </label>
     </template>
   </div>
 </template>
