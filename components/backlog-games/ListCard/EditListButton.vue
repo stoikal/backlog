@@ -73,10 +73,10 @@ const submitEdit = async () => {
       <Button
         size="icon"
         variant="ghost"
-        class="rounded-full"
+        class="rounded-full w-8 h-8"
         @click="openModal"
       >
-        <Pencil class="text-zinc-500 w-5 h-5"/>
+        <Pencil class="text-zinc-500 w-4 h-4"/>
       </Button>
     </DialogTrigger>
     <DialogContent>

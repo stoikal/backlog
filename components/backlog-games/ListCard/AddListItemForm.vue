@@ -64,10 +64,10 @@ const save = async () => {
       <Button
         variant="ghost"
         size="icon"
-        class="rounded-full"
+        class="rounded-full w-8 h-8"
         @click="isInputVisible = true"
       >
-        <Plus />
+        <Plus class="w-5 h-5"/>
       </Button>
     </div>
   </template>

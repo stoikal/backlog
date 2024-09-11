@@ -25,10 +25,10 @@ const isDialogOpen = ref(false);
       <Button
         variant="ghost"
         size="icon"
-        class="rounded-full"
+        class="rounded-full w-8 h-8"
       > 
-        <MessageCircleMore v-if="props.isCommented" class="text-zinc-500 w-5 h-5 "/>
-        <MessageCircle v-else class="text-zinc-500 w-5 h-5 " />
+        <MessageCircleMore v-if="props.isCommented" class="text-zinc-500 w-4 h-4 "/>
+        <MessageCircle v-else class="text-zinc-500 w-4 h-4" />
       </Button>
 
     </DialogTrigger>

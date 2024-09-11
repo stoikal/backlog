@@ -73,10 +73,10 @@ const isDeleteConfirmOpen = ref(false)
 <template>
   <Card class="mb-6">
     <CardHeader class="border-b flex-row justify-between items-center">
-      <CardTitle class="mb-0 h3">
+      <CardTitle class="text-md">
         {{ props.title }}
       </CardTitle>
-      <!-- <div  class="flex justify-between items-center"> -->
+
       <div class="space-x-2" v-if="!props.readOnly">
         <EditListButton
           :list-id="props.listId"
@@ -89,9 +89,9 @@ const isDeleteConfirmOpen = ref(false)
             <Button
               variant="ghost"
               size="icon"
-              class="rounded-full"
+              class="rounded-full w-8 h-8"
             >
-              <Trash class="text-red-900 w-5 h-5"/>
+              <Trash class="text-red-900 w-4 h-4"/>
             </Button>
           </PopoverTrigger>
           <PopoverContent>
@@ -107,15 +107,15 @@ const isDeleteConfirmOpen = ref(false)
           </PopoverContent>
         </Popover>
       </div>
-      <!-- </div> -->
     </CardHeader>
 
-    <CardContent class="px-0">
+    <CardContent class="p-0">
       <template v-for="item in displayedItems" :key="item.gameId">
-        <div class="p-6 border-b items-center flex gap-x-2 justify-between hover:bg-zinc-900">
+        <div class="px-6 py-3 border- items-center flex gap-x-2 justify-between">
           <div class="items-center flex gap-x-2">
             <Checkbox
               :checked="item.isFinished"
+              class="h-3 w-3"
               @update:checked="handleStatusCheckboxChange(item, $event)"
             />
 
@@ -137,7 +137,7 @@ const isDeleteConfirmOpen = ref(false)
       </template>
     </CardContent>
 
-    <CardFooter class="justify-center">
+    <CardFooter class="justify-center pt-2 pb-4">
       <AddListItemForm
         v-if="!props.readOnly"
         :list-id="props.listId"
