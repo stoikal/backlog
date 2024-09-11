@@ -14,6 +14,11 @@ const getLists = async (client) => {
           title,
           work_statuses (
             is_finished
+          ),
+          ref_works_authors (
+            ...ref_authors (
+              name
+            )
           )
         )
       )
@@ -26,7 +31,8 @@ const getLists = async (client) => {
     items: list.list_items?.map((item) => ({
       workKey: item.work_key,
       workTitle: item.title,
-      isFinished: item.work_statuses?.[0]?.is_finished
+      isFinished: item.work_statuses?.[0]?.is_finished,
+      authors: item.ref_works_authors?.map((author) => author.name),
     }))
   }))
 

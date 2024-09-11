@@ -54,6 +54,17 @@ const sortedItems = computed(() => {
       return 0
     })
 })
+
+const getItemLabel = (item) => {
+  let label = item.workTitle
+
+  if (item.authors?.length) {
+    label += ' - '
+    label += item.authors.join(', ')
+  } 
+
+  return label
+}
 </script>
 
 <template>
@@ -81,8 +92,8 @@ const sortedItems = computed(() => {
                 open: true,
               }"
             >
-              <s v-if="item.isFinished">{{ item.workTitle }}</s>
-              <span v-else>{{ item.workTitle }}</span>
+              <s v-if="item.isFinished">{{ getItemLabel(item) }}</s>
+              <span v-else>{{ getItemLabel(item) }}</span>
             </p>
           </div>
         </div>
