@@ -4,15 +4,19 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const body = await readBody(event)
 
-  const { data: { user } } = await client.auth.getUser()
-
-  const { data } = await client
+  const { data: rawData } = await client
     .schema('games_backlog')
     .from('game_statuses')
     .upsert([
-      { user_id: user?.id, game_id: body.gameId, is_finished: body.isFinished },
+      { game_id: body.gameId, is_finished: body.isFinished },
     ])
     .select()
+
+  const item = rawData[0]
+  const data = {
+    gameId: item.game_id,
+    isFinished: item.is_finished,
+  }
 
   return { data }
 })
