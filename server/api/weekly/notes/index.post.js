@@ -4,13 +4,16 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   const body = await readBody(event)
 
-  const { data } = await client
-    .schema('reading_backlog')
-    .from('lists')
-    .insert([
-      { title: body.title },
+  const { data, error } = await client
+    .schema('weekly')
+    .from('notes')
+    .upsert([
+      {
+        week_id: body.weekId,
+        content: body.content
+      },
     ])
     .select()      
 
-  return { data }
+  return { data, error, body }
 })

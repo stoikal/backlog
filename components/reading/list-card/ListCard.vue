@@ -27,7 +27,6 @@ const handleStatusCheckboxChange = async (item, checked) => {
   await $fetch(`/api/reading/works/${workKey}/status`, {
     method: 'PUT',
     body: {
-      workKey,
       isFinished: checked,
     }
   })
