@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import FloatButtonGroup from '~/components/common/FloatButtonGroup.vue';
 import UnsplashlikeColumns from '~/components/common/UnsplashlikeColumns.vue';
-import ListCard from '~/components/home/ListCard/index.vue';
-import FilteredLists from '~/components/home/FilteredLists.vue';
-import AddGameButton from '~/components/home/AddGameButton/index.vue';
-import AddListButton from '~/components/home/AddListButton/index.vue'
+import AddList from '~/components/backlog-games/AddList.vue';
+import AddGame from '~/components/backlog-games/AddGame/index.vue';
+import ListCard from '~/components/backlog-games/ListCard/index.vue';
+import FilteredLists from '~/components/backlog-games/FilteredLists.vue';
 
 definePageMeta({ middleware: 'auth' })
 
@@ -19,38 +20,38 @@ loadLists()
 
 // group list-cards into columns
 const customReducer = (columns, item, itemIndex, columnCount) => {
-  let cols = itemIndex === 0
+  const resultColumns = itemIndex === 0
     ? Array(columnCount).fill(null).map(() => [])
     : columns
 
-  let shortestIndex = 0
+  let shortestColumnIndex = 0
 
-  for (let i = 1; i < cols.length; i++) {
-    const prev = cols[shortestIndex].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
-    const curr = cols[i].reduce((a, b) => a + 2 + b.items.length ?? 0, 0)
+  for (let i = 1; i < resultColumns.length; i++) {
+    const ITEM_PENALTY = 3 // to account for card header and footer heights
+    const prev = resultColumns[shortestColumnIndex].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
+    const curr = resultColumns[i].reduce((sum, n) => ITEM_PENALTY + sum + n.items.length, 0)
 
     if (curr < prev) {
-      shortestIndex = i
+      shortestColumnIndex = i
     }
   }
 
-  cols[shortestIndex].push(item)
+  resultColumns[shortestColumnIndex].push(item)
 
-  return cols
+  return resultColumns
 }
 </script>
 
 <template>
-  <div style="max-width: 1200px; margin: 0 auto;">
+  <div class="max-w-[1200px] mx-auto p-6">
     <FilteredLists :lists="rawLists">
       <template v-slot="{ lists }">
         <UnsplashlikeColumns
           :items="lists"
           :customReducer="customReducer"
         >
-          <template #renderItem="{ item }">
+          <template #renderItem="{ item }" :key="item.listId">
             <ListCard
-              :key="item.listId"
               :listId="item.listId"
               :title="item.title"
               :items="item.items"
@@ -65,17 +66,14 @@ const customReducer = (columns, item, itemIndex, columnCount) => {
     </FilteredLists>
   </div>
 
-  <a-float-button-group
-  :open="false"
-  shape="circle" :style="{ right: '24px' }"
-  >
-    <AddGameButton
+  <FloatButtonGroup>
+    <AddGame
       @success="loadLists"
       @list-success="loadLists"
     />
 
-    <AddListButton
+    <AddList
       @success="loadLists"
     />
-  </a-float-button-group>
+  </FloatButtonGroup>
 </template>

@@ -24,7 +24,7 @@ const getCombinedGameStatuses = async (client) => {
     .map(([key, items]) => ({
       listId: key,
       title: key,
-      createdAt: new Date().toISOString(),
+      createdAt: null,
       pseudo: true,
       items: items.map((item) => ({
         gameId: item.game_id,
@@ -39,6 +39,9 @@ const getCombinedGameStatuses = async (client) => {
   }
 }
 
+// FIXME optimize
+// maybe only get the list id and title (exclude the items)
+// paginate?
 const getLists = async (client) => {
   const { data: rawData } = await client
     .schema('games_backlog')
@@ -53,6 +56,9 @@ const getLists = async (client) => {
           name,
           game_statuses (
             is_finished
+          ),
+          game_comments (
+            comment
           )
         )
       )
@@ -66,7 +72,8 @@ const getLists = async (client) => {
     items: list.list_items?.map((item) => ({
       gameId: item.game_id,
       gameTitle: item.name,
-      isFinished: item.game_statuses[0]?.is_finished
+      isFinished: item.game_statuses[0]?.is_finished,
+      isCommented: !!item.game_comments[0],
     }))
   }))
 
@@ -77,15 +84,17 @@ export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
   
   const [
-    resGameStatues,
+    resGameStatuses,
     resLists,
   ] = await Promise.all([
     getCombinedGameStatuses(client),
     getLists(client)
   ])
 
+  const gameStatuses = resGameStatuses.data
+  const lists = resLists.data
+
   return {
-    data: resGameStatues.data.concat(resLists.data),
-    error: resGameStatues.error
+    data: [...gameStatuses, ...lists]
   }
 })

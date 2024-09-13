@@ -1,59 +1,61 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref } from 'vue'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 definePageMeta({ middleware: 'auth' })
 
 const supabase = useSupabaseClient()
 
-const formState = reactive({
+const formState = ref({
   email: '',
-  password: '',
+  password: ''
 })
 
-const onFinish = async ({ email, password }) => {
+const handleSubmit = async () => {
+  const { email, password } = formState.value
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (!error) {
-    navigateTo({ path: '/backlog/games' })
+    navigateTo({ path: '/' })
   }
 }
 </script>
 <template>
-  <a-row justify="center">
-    <a-col>
-      <a-card style="width: 500px">
-        <a-form
-          :model="formState"
-          :label-col="{ span: 24 }"
-          :wrapper-col="{ span: 24 }"
-          @finish="onFinish"
+  <div class="p-8">
+    <Card class="w-[500px] max-w-full mx-auto">
+      <CardHeader>
+        <CardTitle>Log In</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form
+          class="text-end space-y-6"
+          @submit.prevent="handleSubmit"
         >
-          <a-form-item
-            label="Email"
-            name="email"
-          >
-            <a-input v-model:value="formState.email" />
-          </a-form-item>
-  
-          <a-form-item
-            label="Password"
-            name="password"
-          >
-            <a-input
-              v-model:value="formState.password"
-              type="password"
-            />
-          </a-form-item>
-          
-          <a-row justify="end">
-            <a-col>
-              <a-form-item>
-                  <a-button type="primary" html-type="submit">Submit</a-button>
-              </a-form-item>
-            </a-col>
-          </a-row>
-        </a-form>
-      </a-card>
-    </a-col>
-  </a-row>
+          <Input
+            v-model="formState.email"
+            id="login-email"
+            placeholder="Email"
+          />
+
+          <Input
+            v-model="formState.password"
+            id="login-password"
+            type="password"
+            placeholder="Password"
+          />
+
+          <Button type="submit">
+            Log In
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  </div>
 </template>

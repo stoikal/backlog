@@ -20,6 +20,7 @@ const columnCount = computed(() => {
 })
 
 const listsColumns = computed(() => {
+  // example result: [[1, 4, 7], [2, 5], [3, 6]]
   const defaultReducer = (columns, item, itemIndex, columnCount) => {
     const columnIndex = itemIndex % columnCount
 
@@ -45,19 +46,19 @@ const listsColumns = computed(() => {
 </script>
 
 <template>
-  <a-row :gutter="24">
+  <div class="flex gap-6">
     <template
       v-for="(col, index) in listsColumns"
       :key="index"
     >
-      <a-col :span="24 / columnCount">
+      <div :class="columnCount === 3 ? 'w-1/3' : columnCount === 2 ? 'w-1/2' : 'w-full'">
         <template
           v-for="(item, itemIndex) in col"
           :key="itemIndex"
         >
           <slot name="renderItem" :item="item"></slot>
         </template>
-      </a-col>
+      </div>
     </template>
-  </a-row>
+  </div>
 </template>

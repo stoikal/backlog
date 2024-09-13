@@ -1,4 +1,12 @@
 <script setup>
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
 const options = [
   // general purpose computers
   { label: "PC", value: 6 },
@@ -36,10 +44,17 @@ const model = defineModel()
 </script>
 
 <template>
-  <a-select
-    :value="model"
-    allow-clear
-    placeholder="Platform"
-    :options="options"
-  />
+  <Select v-model="model">
+    <SelectTrigger class="w-full">
+      <SelectValue placeholder="Platform" />
+    </SelectTrigger>
+    <SelectContent>
+      <template
+        v-for="option in options"
+        :key="option.value"
+      >
+        <SelectItem :value="option.value">{{ option.label }}</SelectItem>
+      </template>
+    </SelectContent>
+  </Select>
 </template>

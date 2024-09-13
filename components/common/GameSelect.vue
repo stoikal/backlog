@@ -1,6 +1,23 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core'
+import { ChevronsUpDown } from 'lucide-vue-next'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+  Button
+} from '@/components/ui/button'
 
 let lastFetchId = 0;
 
@@ -66,26 +83,55 @@ watch(() => props.platform, () => {
   debouncedFetchGames(searchKey.value)
 })
 
-const handleSelect = (value) => {
-  model.value = value
-}
+const buttonLabel = computed(() => {
+  return model.value?.label || 'Select game'
+})
+
+const open = ref(false)
 </script>
 
 <template>
-  <a-select
-    :value="model"
-    :size="props.size || 'middle'"
-    show-search
-    label-in-value
-    placeholder="Select game"
-    :filter-option="false"
-    :not-found-content="state.fetching ? undefined : null"
-    :options="state.data"
-    @search="debouncedFetchGames"
-    @select="handleSelect"
-  >
-    <template v-if="state.fetching" #notFoundContent>
-      <a-spin size="small" />
-    </template>
-  </a-select>
+  <Popover v-model:open="open">
+    <PopoverTrigger as-child>
+      <Button
+        variant="outline"
+        role="combobox"
+        :aria-expanded="open"
+        class="w-full justify-between"
+      >
+        {{ buttonLabel }}
+        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent class="w-[670px] p-0">
+      <Command
+        :filterFunction="(list) => list"
+        @update:searchTerm="debouncedFetchGames"
+      > 
+        <CommandInput
+          class="h-9"
+          placeholder="Search game..."
+        />
+        <CommandEmpty v-if="state.fetching">loading...</CommandEmpty>
+        <CommandEmpty v-else>No game found.</CommandEmpty>
+        <CommandList>
+          <CommandGroup>
+            <CommandItem
+              v-for="game in state.data"
+              :key="game.value"
+              :value="game.value"
+              @select="(ev) => {
+                const found = state.data.find((d) => d.value === ev.detail.value)
+
+                model = found
+                open = false
+              }"
+            >
+              {{ game.label }}
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
 </template>

@@ -1,11 +1,15 @@
 <script setup>
-import { LogoutOutlined } from '@ant-design/icons-vue'
+import { LogOut } from 'lucide-vue-next';
+import Button from '@/components/ui/button/Button.vue';
 
 useHead({
-  title: 'Games Backlog',
+  title: 'Backlog',
   meta: [
-    { name: 'description', content: 'Backlog of Games' }
+    { name: 'description', content: 'Backlog' }
   ],
+  bodyAttrs: {
+    class: 'dark',
+  },
 })
 
 const supabase = useSupabaseClient()
@@ -18,34 +22,22 @@ const logoutAndRedirect = async () => {
 </script>
 
 <template> 
-  <a-config-provider>
-    <a-layout
-      style="min-height: 100vh;"
-    >
-      <a-layout-header>
-        <a-row justify="end">
-          <a-col>
-            <template v-if="user">
-              <a-button
-                shape="circle"
-                type="primary"
-                danger
-                @click="logoutAndRedirect"
-              >
-                <template #icon>
-                  <LogoutOutlined />
-                </template>
-              </a-button>
-            </template>
-          </a-col>
-        </a-row>
-      </a-layout-header>
-  
-      <a-layout-content
-        style="padding: 2rem"
-      >
-        <NuxtPage />
-      </a-layout-content>
-    </a-layout>
-  </a-config-provider>
+  <header class="border-b">
+    <div class="text-end p-4 px-12">
+      <template v-if="user">
+        <Button
+          class="rounded-full"
+          size="icon"
+          @click="logoutAndRedirect"
+        >
+          <LogOut />
+        </Button>
+      </template>
+    </div>
+  </header>
+  <div>
+    <main>
+      <NuxtPage />
+    </main>
+  </div>
 </template>

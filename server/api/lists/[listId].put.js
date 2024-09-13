@@ -5,7 +5,7 @@ export default eventHandler(async (event) => {
   const listId = getRouterParam(event, 'listId')
   const body = await readBody(event)
 
-  const { data, error } = await client
+  const { data } = await client
     .schema('games_backlog')
     .from('lists')
     .update({ title: body.title })

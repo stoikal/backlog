@@ -36,8 +36,7 @@ const getToken = async () => {
 export default eventHandler(async (event) => {
   const client = await serverSupabaseClient(event)
 
-  const session = await client.auth.getSession();
-  const { user } = session.data.session ?? {}
+  const { data: { user } } = await client.auth.getUser()
 
   if (!user) return { data: null }
 
