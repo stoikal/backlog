@@ -11,6 +11,11 @@
           gaming backlog
         </NuxtLink>
       </li>
+      <li>
+        <NuxtLink to="/weekly" class="hover:underline">
+          weekly
+        </NuxtLink>
+      </li>
     </ul>
   </div>
 </template>
