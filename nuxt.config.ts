@@ -13,5 +13,21 @@ export default defineNuxtConfig({
       appVersion: '',
       appEmail: ''
     }
-  }
+  },
+  hooks: {
+    'pages:extend'(pages) {
+        pages.push(
+          {
+            name: 'games-backlog',
+            path: '/games',
+            file: '~/pages/backlog/games.vue'
+          },
+          {
+            name: 'reading-backlog',
+            path: '/reading',
+            file: '~/pages/backlog/reading.vue'
+          },
+        )
+    }
+}
 })
