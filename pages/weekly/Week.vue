@@ -1,5 +1,6 @@
 <script setup>
 import { useDebounceFn } from '@vueuse/core'
+import { Badge } from '@/components/ui/badge'
 import TipTap from '~/components/common/TipTap.vue';
 
 const props = defineProps({
@@ -40,11 +41,11 @@ load()
 
 <template>
   <div>
-    <a-tag>Week {{ props.weekNum }}</a-tag>
+    <Badge>Week {{ props.weekNum }}</Badge>
     <br />
     <br />
     <template v-if="loaded">
-      <TipTap v-model="content"/>
+      <TipTap v-model="content" class="border" />
     </template>
   </div>
 </template>
