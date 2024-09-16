@@ -1,6 +1,15 @@
 <script setup>
 import { LogOut } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu'
 
 useHead({
   title: 'Backlog',
@@ -23,16 +32,53 @@ const logoutAndRedirect = async () => {
 
 <template> 
   <header class="border-b">
-    <div class="text-end p-4 px-12">
-      <template v-if="user">
-        <Button
-          class="rounded-full"
-          size="icon"
-          @click="logoutAndRedirect"
-        >
-          <LogOut />
-        </Button>
-      </template>
+    <div class="flex justify-between items-center">
+      <div class="px-6">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger open>Backlog</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul class="w-[200px] p-4">
+                  <li>
+                    <NuxtLink
+                      to="/backlog/reading"
+                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    >
+                      <div class="text-sm font-medium leading-none">Reading</div>
+                    </NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink
+                      to="/backlog/games"
+                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    >
+                      <div class="text-sm font-medium leading-none">Games</div>
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            
+            <NavigationMenuItem>
+              <NuxtLink to="/weekly" :class="navigationMenuTriggerStyle()">
+                Weekly
+              </NuxtLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+      <div class="text-end p-4 px-6">
+        <template v-if="user">
+          <Button
+            class="rounded-full"
+            size="icon"
+            @click="logoutAndRedirect"
+          >
+            <LogOut />
+          </Button>
+        </template>
+      </div>
     </div>
   </header>
   <div>
